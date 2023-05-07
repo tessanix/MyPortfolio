@@ -1,0 +1,14 @@
+site:
+  title: "Portfolio"
+
+server:
+  files:
+    dev:
+      contentRoot: "build/processedResources/js/main/public"
+      script: "build/developmentExecutable/tessanix.js"
+      api: "build/libs/tessanix.jar"
+    prod:
+      script: "build/distributions/tessanix.js"
+      siteRoot: ".kobweb/site"
+
+  port: 8080
