@@ -5,10 +5,10 @@ server:
   files:
     dev:
       contentRoot: "build/processedResources/js/main/public"
-      script: "build/developmentExecutable/tessanix.js"
-      api: "build/libs/tessanix.jar"
+      script: "build/developmentExecutable/Portfolio.js"
+      api: "build/libs/Portfolio.jar"
     prod:
-      script: "build/distributions/tessanix.js"
+      script: "build/distributions/Portfolio.js"
       siteRoot: ".kobweb/site"
 
   port: 8080

@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.tessanix"
-version = "1.0-SNAPSHOT"
+version = "0.0.1"
 
 kobweb {
     app {
@@ -19,7 +19,9 @@ kobweb {
 }
 
 kotlin {
-    configAsKobwebApplication("tessanix", includeServer = true)
+    configAsKobwebApplication("Portfolio", includeServer = true)
+
+    //jvm { jvmToolchain(18) }
 
     @Suppress("UNUSED_VARIABLE") // Suppress spurious warnings about sourceset variables not being used
     sourceSets {

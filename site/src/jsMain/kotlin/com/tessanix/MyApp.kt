@@ -23,6 +23,7 @@ fun MyApp(content: @Composable () -> Unit) {
     SilkApp {
         Surface(SmoothColorStyle.toModifier().minHeight(100.vh)) {
             content()
+
         }
     }
 }
