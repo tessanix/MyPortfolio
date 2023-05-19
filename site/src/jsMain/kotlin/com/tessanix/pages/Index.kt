@@ -1,36 +1,27 @@
 package com.tessanix.pages
 
 import androidx.compose.runtime.*
-import com.tessanix.components.CircularMotionCanvasAnimation
-import com.tessanix.components.DesktopVideo
-import com.tessanix.components.NavBar
-import com.tessanix.components.SmartphoneVideo
-import com.varabyte.kobweb.compose.css.TextAlign
-import com.varabyte.kobweb.compose.css.functions.LinearGradient
-import com.varabyte.kobweb.compose.css.functions.linearGradient
+import com.tessanix.components.*
+import com.varabyte.kobweb.compose.css.*
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.*
+import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
-import com.varabyte.kobweb.core.rememberPageContext
-import com.varabyte.kobweb.silk.components.graphics.Canvas2d
-import com.varabyte.kobweb.silk.components.graphics.ONE_FRAME_MS_60_FPS
-import com.varabyte.kobweb.silk.components.graphics.RenderScope
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.addVariant
 import com.varabyte.kobweb.silk.components.style.toAttrs
-import com.varabyte.kobweb.silk.theme.shapes.Circle
-import com.varabyte.kobweb.silk.theme.shapes.Rect
-import com.varabyte.kobweb.silk.theme.shapes.RectF
 import kotlinx.browser.document
 import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.css.JustifyContent
 import org.jetbrains.compose.web.dom.*
-import org.jetbrains.compose.web.dom.Text
-import org.w3c.dom.*
+import org.w3c.dom.HTMLVideoElement
+import org.w3c.dom.asList
+import org.jetbrains.compose.web.css.AlignItems
 
 
 @Page
@@ -38,6 +29,8 @@ import org.w3c.dom.*
 fun HomePage() {
     val videos = document.getElementsByTagName("video").asList()
     var isPlaying by remember { mutableStateOf(false) }
+
+    val vhOffset = 50
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -47,34 +40,30 @@ fun HomePage() {
         Section (
             Modifier
             .width(100.percent)
-            .height(100.vh)
+            .height((100+vhOffset).vh)
             .display(DisplayStyle.Flex)
             .flexDirection(FlexDirection.Column)
             .justifyContent(JustifyContent.Center)
             .toAttrs()
         ) {
-
-            CircularMotionCanvasAnimation()
+            CircularMotionCanvasAnimation(vhOffset = vhOffset)
         }
 
         Section(Modifier
             .fillMaxWidth()
+            .height(50.vh)
             .padding(10.px)
-            .textAlign(TextAlign.Center)
-            .backgroundImage(
-                linearGradient(dir = LinearGradient.Direction.ToBottom){
-                    add(Color("#0a0a0a"))
-                    add(Color("#8156d7"))
-                    add(Color("#ffffff"))
-
-                }
-            )
+            .margin(top = (-vhOffset).vh)
+            .textAlign(TextAlign.Center)//.filter(blur(10.px))
             .toAttrs()
         ) {
             NavBar()
 
             H1(
-                Modifier.fontFamily("Arial Black").margin(topBottom = 50.px).toAttrs()
+                Modifier
+                    .fontFamily("Arial Black")
+                    .styleModifier { color("rgb(113 187 215)") }
+                    .margin(topBottom = 150.px).toAttrs()
             ) {
                 Text("Salut! Moi, Tessan, je suis la solution qu'il te faut!"); Br()
                 Text("En quelques mots:"); Br()
@@ -86,18 +75,49 @@ fun HomePage() {
 
         Section(Modifier
             .fillMaxWidth()
+            //.height(50.vh)
+            .display(DisplayStyle.Grid)
+            .gridTemplateRows("1fr 1fr 1fr")
+            .gridTemplateColumns("1fr 1fr 1fr 1fr")
+            //.gridAutoRows()
             .padding(10.px)
             .toAttrs()
         ) {
-            H3(
-                Modifier.fontFamily("Arial").toAttrs()
-            ) {
-                Text("Mes compétences en programmation:"); Br()
-                Text("- Développement mobile Android natif fullstack en Kotlin)"); Br()
-                Text("- Développement Backend pour le web"); Br()
-                Text("- Développement logiciel bas niveau en C++"); Br()
-                Text("- Scripts Python"); Br()
-            }
+            H3( Modifier
+                .display(DisplayStyle.Flex)
+                .alignItems(AlignItems.Center)
+                .justifyContent(JustifyContent.Center)
+                .fontFamily("Arial")
+                .gridArea("1", "1", "2", "2")
+                .toAttrs()
+            ){ Text("Langages: ") }
+
+            CircularProgressBar(Modifier.gridArea("1", "2", "2", "3"), value=85, textLabel="Python")
+            CircularProgressBar(Modifier.gridArea("1", "3", "2", "4"), value=65, textLabel="C++")
+            CircularProgressBar(Modifier.gridArea("1", "4", "2", "5"), value=70, textLabel="Kotlin")
+
+            H3( Modifier
+                .display(DisplayStyle.Flex)
+                .alignItems(AlignItems.Center)
+                .justifyContent(JustifyContent.Center)
+                .fontFamily("Arial")
+                .gridArea("2", "1", "3", "2")
+                .toAttrs()
+            ){ Text("Positions: ") }
+
+            CircularProgressBar(Modifier.gridArea("2", "2", "3", "3"), value = 55, textLabel = "Mobile/Web FrontEnd")
+            CircularProgressBar(Modifier.gridArea("2", "3", "3", "4"), value = 65, textLabel = "BackEnd")
+
+            H3(Modifier
+                .display(DisplayStyle.Flex)
+                .alignItems(AlignItems.Center)
+                .justifyContent(JustifyContent.Center)
+                .fontFamily("Arial")
+                .gridArea("3", "1", "4", "2")
+                .toAttrs()
+            ){ Text("Autres Technologies: ") }
+            CircularProgressBar(Modifier.gridArea("3", "2", "4", "3"), value = 75, textLabel = "Git")
+            CircularProgressBar(Modifier.gridArea("3", "3", "4", "4"), value = 70, textLabel = "Linux")
         }
 
         Section(Modifier

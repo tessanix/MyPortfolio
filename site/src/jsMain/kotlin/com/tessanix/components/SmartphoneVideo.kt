@@ -49,5 +49,5 @@ val videoSmartphoneAttrs = Modifier
     .width(55.percent)
     .height(86.percent)
     .margin(20.px)
-    .borderRadius(55.px)
+    .borderRadius(13.percent)
     .toAttrs<AttrsScope<HTMLVideoElement>>()

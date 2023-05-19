@@ -2,11 +2,16 @@ package com.tessanix.components
 
 import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.modifiers.*
+import com.varabyte.kobweb.compose.ui.modifiers.height
+import com.varabyte.kobweb.compose.ui.modifiers.onMouseDown
+import com.varabyte.kobweb.compose.ui.modifiers.onMouseUp
+import com.varabyte.kobweb.compose.ui.modifiers.width
 import com.varabyte.kobweb.silk.components.graphics.Canvas2d
 import com.varabyte.kobweb.silk.components.graphics.ONE_FRAME_MS_60_FPS
 import com.varabyte.kobweb.silk.components.graphics.RenderScope
+import kotlinx.browser.window
 import org.jetbrains.compose.web.css.percent
+import org.jetbrains.compose.web.css.vh
 import org.w3c.dom.CENTER
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.CanvasState
@@ -39,7 +44,7 @@ fun drawText(
 
     lines.forEachIndexed { index, line ->
         val yPos = yStartingPos + index * fontSize
-        renderScope.ctx.fillText(line, xPos, yPos);
+        renderScope.ctx.fillText(line, xPos, yPos)
     }
 }
 class Particle(
@@ -81,26 +86,29 @@ fun drawCentralButton(
     renderScope.ctx.font = "Bold 40px sans-serif"
     renderScope.ctx.textAlign = CanvasTextAlign.CENTER
     renderScope.ctx.fillText("Discover", x, y+10)
-
     renderScope.ctx.closePath()
 }
 
 
 @Composable
-fun CircularMotionCanvasAnimation(n: Int = 400) {
+fun CircularMotionCanvasAnimation(n: Int = 400, vhOffset: Int = 50) {
+    val yScaleFactorRect = 3.0
+    val xScaleFactorRect = 2.0
+
+    val yScaleFactorArc = 3.0
+    val xScaleFactorArc = 2.0
 
     var mouseDown = false
     var buttonAlpha = 0.6
     var textAlpha = 0.0
     var particlesAlpha = 1.0
     var radians = 0.0
-    val canvasWith = 1500.0
-    val canvasHeight = 1000.0
+
     val particlesTheme = listOf("#2185C5", "#7ECEFD", "#FFF6E5", "#FF7F66")
 
     val particles = buildList {
-        val increasedWith = canvasWith + 300
-        val increasedHeight = canvasHeight + 300
+        val increasedWith = window.innerWidth + 500
+        val increasedHeight = window.innerHeight + 500
         for(i in 0 until n){
              this.add(
                  Particle(
@@ -114,37 +122,39 @@ fun CircularMotionCanvasAnimation(n: Int = 400) {
     }
 
     Canvas2d(
-        width = canvasWith.toInt(),
-        height = canvasHeight.toInt(),
+        // canvas buffer dimensions
+        width = 2000,
+        height = 1500,
         modifier = Modifier
             .onMouseDown {  mouseDown = true }
             .onMouseUp { mouseDown = false }
-            .onMouseOver { /*TODO: change cursor to pointer when over the central button */ }
-            .height(100.percent)
-            .width(100.percent),
+            .width(100.percent)
+            .height((100+vhOffset).vh),
         minDeltaMs = ONE_FRAME_MS_60_FPS,
     ){
+        val canvasWith = ctx.canvas.width.toDouble() // always == 1800
+        val canvasHeight = ctx.canvas.height.toDouble() // always == 960
+        val canvasHeightOnViewPort = canvasHeight - (canvasHeight/(100+vhOffset))*vhOffset
+
         ctx.fillStyle = "rgba(10, 10, 10, $particlesAlpha)"
         ctx.fillRect(0.0, 0.0, canvasWith, canvasHeight)
 
         ctx.save {
-            ctx.translate(canvasWith / 2, canvasHeight / 2)
+            ctx.translate(canvasWith/2, canvasHeightOnViewPort/2 )
             ctx.rotate(radians)
             particles.forEach { it.update(this) }
         }
 
         ctx.save {
             drawCentralButton(
-                canvasWith / 2,
-                canvasHeight / 2,
+                canvasWith/2,
+                canvasHeightOnViewPort/2,
                 100.0,
                 "rgba(88, 92, 150, $buttonAlpha)",
                 "rgba(200, 200, 200, $buttonAlpha)",
                 this
             )
-        }
 
-        ctx.save {
             drawText(
                 "Welcome\nto my place!",
                 48,
@@ -153,6 +163,38 @@ fun CircularMotionCanvasAnimation(n: Int = 400) {
                 canvasHeight,
                 this
             )
+        }
+
+        ctx.save {
+            ctx.beginPath()
+            val grad = ctx.createRadialGradient(
+                (canvasWith/2)/xScaleFactorRect, yScaleFactorRect*canvasHeight, 0.0,
+                (canvasWith/2)/xScaleFactorRect, yScaleFactorRect*canvasHeight, canvasWith/2
+            )
+            grad.addColorStop(0.95, "rgba(10,10,10, 0.2)")
+            grad.addColorStop(0.90, "rgba(70, 51, 83, 0.5)")
+            grad.addColorStop(0.6, "rgba(134, 109, 152, 0.6)")
+            grad.addColorStop(0.5, "rgba(250,250,250, 0.7)")
+            grad.addColorStop(0.0, "rgba(255,255,255, 1)")
+            ctx.fillStyle = grad
+            ctx.setTransform(xScaleFactorRect, 0.0,0.0,1/yScaleFactorRect, 0.0, 0.0)
+            ctx.fillRect(0.0, canvasHeightOnViewPort*yScaleFactorRect, canvasWith, yScaleFactorRect*(canvasHeight-canvasHeightOnViewPort))
+            ctx.closePath()
+        }
+
+        ctx.save {
+            ctx.beginPath()
+            val grad = ctx.createLinearGradient(
+                0.0, canvasHeight*0.90*yScaleFactorArc,
+                0.0, canvasHeight*yScaleFactorArc
+            )
+            grad.addColorStop(0.0, "rgba(250,250,250, 0.1)")
+            grad.addColorStop(1.0, "rgba(255,255,255, 1.0)")
+            ctx.fillStyle = grad
+            ctx.setTransform(xScaleFactorArc, 0.0,0.0,1/yScaleFactorArc, 0.0, 0.0)
+            ctx.arc(canvasWith/2/xScaleFactorArc, canvasHeight*yScaleFactorArc, canvasWith/yScaleFactorArc, 0.0,2*PI)
+            ctx.fill()
+            ctx.closePath()
         }
 
         radians += 0.005

@@ -33,6 +33,7 @@ kotlin {
 
         val jsMain by getting {
             dependencies {
+                implementation("org.jetbrains.compose.html:html-svg-js:1.4.0")
                 implementation(compose.html.core)
                 implementation(libs.kobweb.core)
                 implementation(libs.kobweb.silk.core)
