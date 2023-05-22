@@ -26,8 +26,10 @@ import org.jetbrains.compose.web.svg.SvgElement
 @Composable
 fun CircularProgressBar(
     modifier: Modifier,
+    gradientColorStart: String,
+    gradientColorEnd: String,
     value: Int = 65,
-    textLabel: String? = null,
+    textLabel: String,
     width: Int = 160,
     height: Int = 160,
     barThickness: Int = 20
@@ -103,7 +105,6 @@ fun CircularProgressBar(
                         .justifyContent(JustifyContent.Center)
                         .alignItems(AlignItems.Center)
                         .borderRadius(50.percent)
-                        .color(Color("#00000"))
                         .fontWeight(FontWeight.Bold)
                         .fontFamily("Arial")
                         .styleModifier {
@@ -131,14 +132,20 @@ fun CircularProgressBar(
                     .left(0.px)
                     .toAttrs()
             ) {
-                LinearGradient(id = "GradientColor") {
+                val idText = if(textLabel!="Mobile/Web FrontEnd") textLabel else "MobileWebFrontEnd"
+
+                LinearGradient(id = "GradientColor$idText") {
                     Stop(attrs = Modifier.toAttrs {
                         attr("offset", "0%")
-                        attr("stop-color", "#e91e63")
+                        attr("stop-color", gradientColorStart)
+                    })
+                    Stop(attrs = Modifier.toAttrs {
+                        attr("offset", "50%")
+                        attr("stop-color", gradientColorStart)
                     })
                     Stop(attrs = Modifier.toAttrs {
                         attr("offset", "100%")
-                        attr("stop-color", "#673ab7")
+                        attr("stop-color", gradientColorEnd)
                     })
                 }
                 Circle(
@@ -148,28 +155,24 @@ fun CircularProgressBar(
                     attrs = {
                         attr("stroke-linecap", "round") // make ends of the stroke (outline) of the circle round
                         attr("fill", "none") // make circle transparent
-                        attr("stroke", "url(#GradientColor)") // color the stroke (outline)
+                        attr("stroke", "url(#GradientColor$idText)") // color the stroke (outline)
                         attr("stroke-width", "${barThickness}px")
-                        attr(
-                            "stroke-dasharray",
-                            "472"
-                        ) // defines the pattern of dashes and gaps used in the stroke of the circle.
+                        attr("stroke-dasharray", "472") // defines the pattern of dashes and gaps used in the stroke of the circle.
                         attr("stroke-dashoffset", "$dashOffsetValue") // the distance by which the stroke is offset
                     }
                 )
             }
         }
 
-        if (textLabel != null) {
-            Label(
-                attrs = Modifier
-                    .margin(20.px)
-                    .color(Color("#00000"))
-                    .fontWeight(FontWeight.Bold)
-                    .fontFamily("Arial").toAttrs()
-            ) {
-                Text(textLabel)
-            }
+        Label(
+            attrs = Modifier
+                .margin(20.px)
+                //.color(Color("#00000"))
+                .fontWeight(FontWeight.Bold)
+                .fontFamily("Arial")
+                .toAttrs()
+        ) {
+            Text(textLabel)
         }
     }
 }

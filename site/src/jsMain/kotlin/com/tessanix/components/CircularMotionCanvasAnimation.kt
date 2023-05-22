@@ -2,10 +2,7 @@ package com.tessanix.components
 
 import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.modifiers.height
-import com.varabyte.kobweb.compose.ui.modifiers.onMouseDown
-import com.varabyte.kobweb.compose.ui.modifiers.onMouseUp
-import com.varabyte.kobweb.compose.ui.modifiers.width
+import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.silk.components.graphics.Canvas2d
 import com.varabyte.kobweb.silk.components.graphics.ONE_FRAME_MS_60_FPS
 import com.varabyte.kobweb.silk.components.graphics.RenderScope
@@ -91,7 +88,11 @@ fun drawCentralButton(
 
 
 @Composable
-fun CircularMotionCanvasAnimation(n: Int = 400, vhOffset: Int = 50) {
+fun CircularMotionCanvasAnimation(
+    n: Int = 500,
+    vhOffset: Int = 50,
+    backgroundColor: String
+) {
     val yScaleFactorRect = 3.0
     val xScaleFactorRect = 2.0
 
@@ -107,8 +108,8 @@ fun CircularMotionCanvasAnimation(n: Int = 400, vhOffset: Int = 50) {
     val particlesTheme = listOf("#2185C5", "#7ECEFD", "#FFF6E5", "#FF7F66")
 
     val particles = buildList {
-        val increasedWith = window.innerWidth + 500
-        val increasedHeight = window.innerHeight + 500
+        val increasedWith = window.innerWidth + 700
+        val increasedHeight = window.innerHeight + 700
         for(i in 0 until n){
              this.add(
                  Particle(
@@ -126,8 +127,9 @@ fun CircularMotionCanvasAnimation(n: Int = 400, vhOffset: Int = 50) {
         width = 2000,
         height = 1500,
         modifier = Modifier
-            .onMouseDown {  mouseDown = true }
-            .onMouseUp { mouseDown = false }
+            .onClick { mouseDown = !mouseDown }
+//            .onMouseDown {  mouseDown = true }
+//            .onMouseUp { mouseDown = false }
             .width(100.percent)
             .height((100+vhOffset).vh),
         minDeltaMs = ONE_FRAME_MS_60_FPS,
@@ -171,11 +173,13 @@ fun CircularMotionCanvasAnimation(n: Int = 400, vhOffset: Int = 50) {
                 (canvasWith/2)/xScaleFactorRect, yScaleFactorRect*canvasHeight, 0.0,
                 (canvasWith/2)/xScaleFactorRect, yScaleFactorRect*canvasHeight, canvasWith/2
             )
-            grad.addColorStop(0.95, "rgba(10,10,10, 0.2)")
-            grad.addColorStop(0.90, "rgba(70, 51, 83, 0.5)")
-            grad.addColorStop(0.6, "rgba(134, 109, 152, 0.6)")
-            grad.addColorStop(0.5, "rgba(250,250,250, 0.7)")
-            grad.addColorStop(0.0, "rgba(255,255,255, 1)")
+
+            grad.addColorStop(1.0, "rgba(12,12,12, 0.2)")
+
+//            grad.addColorStop(0.90, "rgba(70, 51, 83, 0.5)")
+//            grad.addColorStop(0.6, "rgba(134, 109, 152, 0.6)")
+//            grad.addColorStop(0.5, "rgba(250,250,250, 0.7)")
+            grad.addColorStop(0.0, backgroundColor) //19 34 80
             ctx.fillStyle = grad
             ctx.setTransform(xScaleFactorRect, 0.0,0.0,1/yScaleFactorRect, 0.0, 0.0)
             ctx.fillRect(0.0, canvasHeightOnViewPort*yScaleFactorRect, canvasWith, yScaleFactorRect*(canvasHeight-canvasHeightOnViewPort))
@@ -185,11 +189,11 @@ fun CircularMotionCanvasAnimation(n: Int = 400, vhOffset: Int = 50) {
         ctx.save {
             ctx.beginPath()
             val grad = ctx.createLinearGradient(
-                0.0, canvasHeight*0.90*yScaleFactorArc,
+                0.0, canvasHeight*0.9*yScaleFactorArc,
                 0.0, canvasHeight*yScaleFactorArc
             )
-            grad.addColorStop(0.0, "rgba(250,250,250, 0.1)")
-            grad.addColorStop(1.0, "rgba(255,255,255, 1.0)")
+            grad.addColorStop(0.0, "rgba(12,20,30, 0.2)")
+            grad.addColorStop(1.0, backgroundColor)
             ctx.fillStyle = grad
             ctx.setTransform(xScaleFactorArc, 0.0,0.0,1/yScaleFactorArc, 0.0, 0.0)
             ctx.arc(canvasWith/2/xScaleFactorArc, canvasHeight*yScaleFactorArc, canvasWith/yScaleFactorArc, 0.0,2*PI)

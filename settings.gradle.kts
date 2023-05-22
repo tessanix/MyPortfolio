@@ -6,6 +6,6 @@ pluginManagement {
     }
 }
 
-rootProject.name = "tessanix"
+rootProject.name = "Portfolio"
 
 include(":site")

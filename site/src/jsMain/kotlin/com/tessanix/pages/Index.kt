@@ -1,41 +1,51 @@
 package com.tessanix.pages
 
-import androidx.compose.runtime.*
-import com.tessanix.components.*
-import com.varabyte.kobweb.compose.css.*
+import androidx.compose.runtime.Composable
+import com.tessanix.D_PATH_WAVE
+import com.tessanix.components.CircularMotionCanvasAnimation
+import com.tessanix.components.NavBar
+import com.tessanix.components.SkillsWidget
+import com.varabyte.kobweb.compose.css.BackgroundRepeat
+import com.varabyte.kobweb.compose.css.BackgroundSize
+import com.varabyte.kobweb.compose.css.TextAlign
+import com.varabyte.kobweb.compose.css.borderColor
+import com.varabyte.kobweb.compose.css.functions.url
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
-import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
+import com.varabyte.kobweb.core.rememberPageContext
+import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.addVariant
-import com.varabyte.kobweb.silk.components.style.toAttrs
-import kotlinx.browser.document
+import com.varabyte.kobweb.silk.components.style.hover
+import com.varabyte.kobweb.silk.components.style.toModifier
+import org.jetbrains.compose.web.ExperimentalComposeWebSvgApi
+import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.css.JustifyContent
 import org.jetbrains.compose.web.dom.*
-import org.w3c.dom.HTMLVideoElement
-import org.w3c.dom.asList
-import org.jetbrains.compose.web.css.AlignItems
+import org.jetbrains.compose.web.svg.Path
+import org.jetbrains.compose.web.svg.SvgElement
 
 
+@OptIn(ExperimentalComposeWebSvgApi::class)
 @Page
 @Composable
 fun HomePage() {
-    val videos = document.getElementsByTagName("video").asList()
-    var isPlaying by remember { mutableStateOf(false) }
-
+    val ctx = rememberPageContext()
     val vhOffset = 50
+    val backgroundColor = "rgb(19 34 80)" //"rgb(25 33 90)
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.backgroundColor(Color(backgroundColor)).fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
+
     ){
         Section (
             Modifier
@@ -46,7 +56,7 @@ fun HomePage() {
             .justifyContent(JustifyContent.Center)
             .toAttrs()
         ) {
-            CircularMotionCanvasAnimation(vhOffset = vhOffset)
+            CircularMotionCanvasAnimation(vhOffset = vhOffset, backgroundColor = backgroundColor)
         }
 
         Section(Modifier
@@ -59,11 +69,11 @@ fun HomePage() {
         ) {
             NavBar()
 
-            H1(
-                Modifier
-                    .fontFamily("Arial Black")
-                    .styleModifier { color("rgb(113 187 215)") }
-                    .margin(topBottom = 150.px).toAttrs()
+            H1(Modifier
+                .fontFamily("Arial Black")
+                .color(Color("rgb(113 187 215)"))
+                .margin(topBottom = 150.px)
+                .toAttrs()
             ) {
                 Text("Salut! Moi, Tessan, je suis la solution qu'il te faut!"); Br()
                 Text("En quelques mots:"); Br()
@@ -75,136 +85,171 @@ fun HomePage() {
 
         Section(Modifier
             .fillMaxWidth()
-            //.height(50.vh)
-            .display(DisplayStyle.Grid)
-            .gridTemplateRows("1fr 1fr 1fr")
-            .gridTemplateColumns("1fr 1fr 1fr 1fr")
-            //.gridAutoRows()
+            .color(Colors.White)
             .padding(10.px)
             .toAttrs()
         ) {
-            H3( Modifier
-                .display(DisplayStyle.Flex)
-                .alignItems(AlignItems.Center)
-                .justifyContent(JustifyContent.Center)
-                .fontFamily("Arial")
-                .gridArea("1", "1", "2", "2")
-                .toAttrs()
-            ){ Text("Langages: ") }
-
-            CircularProgressBar(Modifier.gridArea("1", "2", "2", "3"), value=85, textLabel="Python")
-            CircularProgressBar(Modifier.gridArea("1", "3", "2", "4"), value=65, textLabel="C++")
-            CircularProgressBar(Modifier.gridArea("1", "4", "2", "5"), value=70, textLabel="Kotlin")
-
-            H3( Modifier
-                .display(DisplayStyle.Flex)
-                .alignItems(AlignItems.Center)
-                .justifyContent(JustifyContent.Center)
-                .fontFamily("Arial")
-                .gridArea("2", "1", "3", "2")
-                .toAttrs()
-            ){ Text("Positions: ") }
-
-            CircularProgressBar(Modifier.gridArea("2", "2", "3", "3"), value = 55, textLabel = "Mobile/Web FrontEnd")
-            CircularProgressBar(Modifier.gridArea("2", "3", "3", "4"), value = 65, textLabel = "BackEnd")
-
-            H3(Modifier
-                .display(DisplayStyle.Flex)
-                .alignItems(AlignItems.Center)
-                .justifyContent(JustifyContent.Center)
-                .fontFamily("Arial")
-                .gridArea("3", "1", "4", "2")
-                .toAttrs()
-            ){ Text("Autres Technologies: ") }
-            CircularProgressBar(Modifier.gridArea("3", "2", "4", "3"), value = 75, textLabel = "Git")
-            CircularProgressBar(Modifier.gridArea("3", "3", "4", "4"), value = 70, textLabel = "Linux")
+            Row(
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                SkillsWidget()
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                  Image(src = "CV_TESSAN_FR-1.png", modifier = Modifier.height(400.px).width(250.px))
+                  Button(attrs = Modifier.margin(10.px).toAttrs()) { Text("Téléchercher le CV") }
+                }
+            }
         }
 
         Section(Modifier
             .fillMaxWidth()
-            .padding(10.px)
+            .color(Colors.White)
             .toAttrs()
         ) {
-            Text("Projects")
-
+            H3(Modifier
+                .textAlign(TextAlign.Center)
+                .margin(50.px)
+                .fontFamily("Arial")
+                .toAttrs()
+            ){ Text("Projets") }
             Row(
-                Modifier.fillMaxWidth()
-                    .padding(20.px)
-                    .borderRadius(20.px)
-                    .backgroundColor(Color.gray)
-                    .position(Position.Relative),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                H1(Modifier.position(Position.Absolute).top(10.px).left(30.px).toAttrs()){
-                    Text("Karaoke App")
-                }
-
-                SmartphoneVideo()
-
-                Column(
-                    Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Button( Modifier.padding(10.px).margin(20.px).toAttrs {
-                        onClick {
-                            isPlaying = !isPlaying
-                            if (isPlaying) videos.forEach { video -> (video as HTMLVideoElement).play() }
-                            else videos.forEach { video -> (video as HTMLVideoElement).pause() }
-                        }
-                    }) {
-                        Text(if (isPlaying) "Pause" else "Play")
-                    }
-                    DesktopVideo()
-                }
+                Div (
+                    attrs = Modifier
+                        .onClick { ctx.router.navigateTo("KaraokeAppProject") }
+                        .then(DivProjectStyle.toModifier(DivProjectKaraokeAppVariant))
+                        .toAttrs()
+                ) {  }
+                Div (
+                    attrs = Modifier
+                        .onClick { ctx.router.navigateTo("KaraokeAppProject") }
+                        .then(DivProjectStyle.toModifier(DivProjectPortfolioVariant))
+                        .toAttrs()
+                ) {  }
+                Div (
+                    attrs = Modifier
+                        .margin(10.px)
+                        .width(30.percent)
+                        .backgroundColor(Colors.Red)
+                        .toAttrs()
+                ) {  }
             }
 
-
-            Div( ProjectDivStyle.toAttrs(Width35ProjectDivStyleVariant) ) {
-                Div( Modifier.fillMaxSize().backgroundColor(Color.bisque).toAttrs() ) {
-                    Text("Project 2 : Kobweb website")
-                }
+            Div ( attrs = Modifier
+                    .height(100.px)
+                    .toAttrs()
+            ) {  }
+            SvgElement("svg",
+                attrs = Modifier
+                    .fillMaxWidth()
+                    .height(220.px)
+                    .margin(bottom = (-5).px)
+                    .toAttrs{
+                        attr("preserveAspectRatio", "none")
+                        attr("viewBox","0 0 1440 260")
+                    }
+            ){
+                Path(
+                    d = D_PATH_WAVE,
+                    attrs = {
+                        //style { property("transform","translate(0, 0px)") }
+                        attr("fill", "rgb(30, 53, 84)")
+                    }
+                )
             }
         }
-//            Row( Modifier.fillMaxWidth() ){
-//                Div( ProjectDivStyle.toAttrs(Width60ProjectDivStyleVariant) ) {
-//                    Text("Project 3 : Hack Wifi App")
-//                }
-//                Div( ProjectDivStyle.toAttrs(Width40ProjectDivStyleVariant) ) {
-//                    Text("Project 4 : Firewall Python")
-//                }
-//            }
-//        }
 
         Footer(Modifier
             .fillMaxWidth()
-            .backgroundColor(color = rgb(100,21,31))
+            .height(600.px)
+            .display(DisplayStyle.Flex)
+            .flexDirection(FlexDirection.Column)
+            .backgroundColor(Color("rgb(30, 53, 84)"))
             .toAttrs()
-        ) { Text("Thank you!") }
+        ) {
+            H3(Modifier
+                .display(DisplayStyle.Flex)
+                .alignItems(AlignItems.Center)
+                .justifyContent(JustifyContent.Center)
+                .color(Colors.White)
+                .fontFamily("Arial")
+                .gridArea("3", "1", "4", "2")
+                .toAttrs()
+            ){ Text("Merci de votre visite!") }
+
+            Column(
+                verticalArrangement = Arrangement.SpaceAround,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxHeight()
+            ) {
+
+                Input(
+                    type = InputType.Email,
+                    attrs = {
+                        defaultValue("Email") // Uncontrolled mode
+                        onInput { event -> println(event.value) }
+                        style {
+                            color(Colors.White)
+                            backgroundColor(Color("rgba(250,250,250,0.3)"))
+                            width(500.px)
+                            borderRadius(5.px)
+                            borderColor(Colors.White)
+                        }
+                    }
+                )
+
+                TextArea(
+                    attrs = {
+                        defaultValue("Ecris ton message ...") // Uncontrolled mode
+                        style {
+                            color(Colors.White)
+                            backgroundColor(Color("rgba(250,250,250,0.3)"))
+                            width(500.px)
+                            height(200.px)
+                            borderRadius(5.px)
+                            borderColor(Colors.White)
+                        }
+                    }
+                )
+
+                Button(
+                    attrs = Modifier
+                        .width(100.px)
+                        .height(50.px)
+                        .color(Colors.White)
+                        .backgroundColor(Color("rgba(250,250,250,0.3)"))
+                        .borderRadius(5.px)
+                        .toAttrs()
+                ) {
+                    Text("Envoyer")
+                }
+            }
+        }
     }
 }
 
-
-
-val ProjectDivStyle by ComponentStyle {
-    base { Modifier.margin(5.px).backgroundColor(color = rgb(200,45,250)) }
+val DivProjectStyle by ComponentStyle{
+    base { Modifier
+        .margin(10.px)
+        .width(30.percent)
+        .height(400.px)
+        .backgroundSize(BackgroundSize.of(100.percent, 100.percent))
+        .backgroundRepeat(BackgroundRepeat.NoRepeat)
+    }
+    hover { Modifier.scale(1.3) }
 }
 
-val Width40ProjectDivStyleVariant by ProjectDivStyle.addVariant {
-    base { Modifier.fillMaxWidth(40.percent) }
+val DivProjectKaraokeAppVariant by DivProjectStyle.addVariant {
+   base { Modifier.backgroundImage(url("logoAppInSmartphoneMockup.svg")) }
 }
 
-val Width60ProjectDivStyleVariant by ProjectDivStyle.addVariant {
-    base { Modifier.fillMaxWidth(60.percent) }
+val DivProjectPortfolioVariant by DivProjectStyle.addVariant {
+    base { Modifier.backgroundImage(url("websiteInDesktopMockupRight.svg")) }
 }
 
-val Width35ProjectDivStyleVariant by ProjectDivStyle.addVariant {
-    base { Modifier.fillMaxWidth(35.percent) }
-}
 
-val Width65ProjectDivStyleVariant by ProjectDivStyle.addVariant {
-    base { Modifier.fillMaxWidth(65.percent) }
-}
+
 
 

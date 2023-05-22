@@ -39,7 +39,7 @@ fun NavBar(){
             CustomLi("Haut de page")
             CustomLi("Mes compétences")
             CustomLi("Mes travaux")
-            CustomLi("Bas de page")
+            CustomLi("Me laisser un message")
         }
     }
 }
