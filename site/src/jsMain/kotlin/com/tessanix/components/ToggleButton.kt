@@ -19,17 +19,17 @@ import org.jetbrains.compose.web.dom.Label
 
 
 @Composable
-fun ToggleButton(inputId: String = "MyToggle"){
+fun ToggleButton(){
     var checked by remember { mutableStateOf(false) }
 
     Label(
-        forId = inputId,
+        //forId = inputId,
         attrs = Modifier.width(60.px).height(30.px).toAttrs()
     ) {
         CheckboxInput(
             checked,
             attrs = Modifier
-                .id(inputId)
+                //.id(inputId)
                 .display(DisplayStyle.None)
                 .onClick { checked = !checked }
                 .then(CheckboxToggleButtonStyle.toModifier())
