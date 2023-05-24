@@ -61,7 +61,7 @@ fun HomePage() {
 
         Section(Modifier
             .fillMaxWidth()
-            .height(50.vh)
+            //.height(80.vh)
             .padding(10.px)
             .margin(top = (-vhOffset).vh)
             .textAlign(TextAlign.Center)//.filter(blur(10.px))
@@ -86,17 +86,33 @@ fun HomePage() {
         Section(Modifier
             .fillMaxWidth()
             .color(Colors.White)
+            .textAlign(TextAlign.Center)
             .padding(10.px)
             .toAttrs()
         ) {
+            H1(Modifier
+                .fontFamily("Arial Black")
+                .margin(topBottom = 90.px)
+                .toAttrs()
+            ) {
+                Text("Mon profil d'ingénieur logiciel:")
+            }
             Row(
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 SkillsWidget()
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                  Image(src = "CV_TESSAN_FR-1.png", modifier = Modifier.height(400.px).width(250.px))
-                  Button(attrs = Modifier.margin(10.px).toAttrs()) { Text("Téléchercher le CV") }
+                    Image(src = "CV_TESSAN_FR-1.png", modifier = Modifier.height(400.px).width(290.px))
+                    Button(attrs = Modifier
+                      .margin(10.px)
+                      .width(100.px)
+                      .height(50.px)
+                      .color(Colors.White)
+                      .backgroundColor(Color("rgba(250,250,250,0.3)"))
+                      .borderRadius(5.px)
+                      .toAttrs()
+                    ) { Text("Téléchercher le CV") }
                 }
             }
         }
@@ -228,7 +244,9 @@ fun HomePage() {
             }
         }
     }
+
 }
+
 
 val DivProjectStyle by ComponentStyle{
     base { Modifier
@@ -239,6 +257,10 @@ val DivProjectStyle by ComponentStyle{
         .backgroundRepeat(BackgroundRepeat.NoRepeat)
     }
     hover { Modifier.scale(1.3) }
+
+//    Breakpoint.XL {
+//
+//    }
 }
 
 val DivProjectKaraokeAppVariant by DivProjectStyle.addVariant {
