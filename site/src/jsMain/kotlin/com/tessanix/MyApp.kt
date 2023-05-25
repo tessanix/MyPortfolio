@@ -8,8 +8,12 @@ import com.varabyte.kobweb.compose.ui.modifiers.minHeight
 import com.varabyte.kobweb.core.App
 import com.varabyte.kobweb.silk.SilkApp
 import com.varabyte.kobweb.silk.components.layout.Surface
+import com.varabyte.kobweb.silk.components.style.breakpoint.BreakpointSizes
 import com.varabyte.kobweb.silk.components.style.common.SmoothColorStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.init.InitSilk
+import com.varabyte.kobweb.silk.init.InitSilkContext
+import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vh
 
 //@InitSilk
@@ -18,15 +22,15 @@ import org.jetbrains.compose.web.css.vh
 //}
 
 
-//@InitSilk
-//fun initializeBreakpoints(ctx: InitSilkContext) {
-//    ctx.theme.breakpoints = BreakpointSizes(
-//        sm = 30.cssRem,
-//        md = 48.cssRem,
-//        lg = 62.cssRem,
-//        xl = 80.cssRem
-//    )
-//}
+@InitSilk
+fun initializeBreakpoints(ctx: InitSilkContext) {
+    ctx.theme.breakpoints = BreakpointSizes(
+        sm = 500.px,
+        md = 850.px,
+        lg = 1200.px,
+        xl = 1600.px
+    )
+}
 
 var lang by mutableStateOf("french")
 

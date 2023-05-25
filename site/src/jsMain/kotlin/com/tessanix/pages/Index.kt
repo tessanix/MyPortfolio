@@ -61,6 +61,9 @@ fun HomePage() {
 
         Section(Modifier
             .fillMaxWidth()
+            .display(DisplayStyle.Flex)
+            .flexDirection(FlexDirection.Column)
+            .alignItems(AlignItems.Center)
             //.height(80.vh)
             .padding(10.px)
             .margin(top = (-vhOffset).vh)

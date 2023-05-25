@@ -3,19 +3,16 @@ package com.tessanix.components
 import androidx.compose.runtime.*
 import com.varabyte.kobweb.compose.css.*
 import com.varabyte.kobweb.compose.css.JustifyContent
-import com.varabyte.kobweb.compose.css.functions.radialGradient
-import com.varabyte.kobweb.compose.foundation.layout.Arrangement
-import com.varabyte.kobweb.compose.foundation.layout.Column
-import com.varabyte.kobweb.compose.foundation.layout.Row
-import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
+import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.ComponentVariant
 import com.varabyte.kobweb.silk.components.style.addVariant
+import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.css.AlignItems
@@ -25,31 +22,30 @@ import org.jetbrains.compose.web.dom.*
 fun CustomLi(text:String){
 
     var alpha1 by remember { mutableStateOf(0.0) }
-    var alpha2 by remember { mutableStateOf(0.0) }
 
     var launchBackgroundAnimation by remember { mutableStateOf(false) }
 
-    LaunchedEffect(launchBackgroundAnimation){
+    LaunchedEffect(launchBackgroundAnimation) {
         launchBackgroundAnimation = false
-        while(0.0 < alpha1 && 0.0 < alpha2) {
-            alpha1 -= 0.01; alpha2 -= 0.01
-            delay(30)
+        while(0.0 < alpha1){
+            alpha1 -= 0.025; delay(30)
         }
     }
 
     Li(
         Modifier
-            .onMouseEnter { alpha1 = 0.2; alpha2 = 1.0 }
+            .onMouseEnter { alpha1 = 0.6 }
             .onMouseLeave { launchBackgroundAnimation = true }
             .margin(leftRight = 24.px)
             .padding(16.px)
-            .borderRadius(30.percent)
-            .backgroundImage(
-                gradient = radialGradient {
-                    add(Color("rgba(250,250,250, $alpha1)"), stop = 0.percent)
-                    add(Color("rgba(10,10,10, $alpha2)"), stop=60.percent)
-                }
-            ) //Color("rgba(250,250,250,$alpha)")))
+            .borderRadius(50.percent)
+            .styleModifier {
+                property(
+                    "box-shadow",
+                    "0px 0px 30px 35px rgba(250,250,250, $alpha1),"+
+                            "inset 0px 0px 9px 10px rgba(250,250,250, $alpha1)"
+                )
+            }
             .fontFamily("Arial")
             .color(Colors.White)
             .cursor(Cursor.Pointer)
@@ -59,9 +55,9 @@ fun CustomLi(text:String){
 }
 
 @Composable
-fun MyNav(variant: ComponentVariant){
+fun MyNav( modifier:Modifier ) { //variant: ComponentVariant){
     Nav {
-        Ul(NavUlStyle.toModifier(variant).toAttrs()) {
+        Ul(modifier.toAttrs()) {
             CustomLi("Haut de page")
             CustomLi("Mes compétences")
             CustomLi("Mes travaux")
@@ -78,68 +74,49 @@ fun MyNav(variant: ComponentVariant){
 }
 
 @Composable
-fun NavBar(){
-    var showSideBar by remember{ mutableStateOf(false) }
-
-//    var windowWidth = produceState(initialValue = window.innerWidth) {
-//       value = window.innerWidth
-//    }
-//
-//    LaunchedEffect(windowWidth.value){
-//        print("tu es le plus fort !!!")
-//        if( windowWidth.value > 850) showSideBar = false
-//    }
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = SideBarColumnStyle
-            .toModifier()
-            .left(if(showSideBar) 0.px else (-300).px)
-    ) { MyNav(NavUlColumnStyle) }
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center,
-        modifier = Modifier.width(100.percent)
+fun Hamburger(
+    isSideBarShown: Boolean,
+    showSideBarFunc: (Boolean)->Unit
+){
+    Div(
+        Modifier
+            .onClick { showSideBarFunc(isSideBarShown) }
+            .then(HamburgerStyle.toModifier())
+            .toAttrs()
     ) {
-        MyNav(NavUlRowStyle)
-
-        Div(
-            Modifier
-                .onClick { showSideBar = !showSideBar }
-                .then(HamburgerStyle.toModifier())
+        for(i in 1 .. 3){
+            Div( attrs = Modifier
+                .width(30.px)
+                .height(2.px)
+                .margin(6.px, 0.px)
+                .backgroundColor(Colors.White)
                 .toAttrs()
-        ) {
-            for(i in 1 .. 3){
-                Div( attrs = Modifier
-                    .width(30.px)
-                    .height(2.px)
-                    .margin(6.px, 0.px)
-                    .backgroundColor(Colors.White)
-                    .toAttrs()
-                )
-            }
+            )
         }
     }
 }
 
-val SideBarColumnStyle by ComponentStyle {
-    base { Modifier
-        .width(300.px)
-        .height(100.vh)
-        .position(Position.Fixed)
-        .top(0.px)
-        .left((-300).px) /* Offscreen by default */
-        .transition(CSSTransition(
-            TransitionProperty.of("left"),
-            0.3.s,
-            TransitionTimingFunction.EaseInOut
-        ))
+@Composable
+fun NavBar(){
+    var isSideBarShown by remember{ mutableStateOf(false) }
+    val bp = rememberBreakpoint()
+
+    if(bp < Breakpoint.MD){
+        MyNav(
+            NavUlStyle.toModifier(NavUlColumnStyle)
+            .left(if(isSideBarShown) 0.px else (-300).px)
+        )
+        Hamburger(
+            isSideBarShown = isSideBarShown,
+            showSideBarFunc = {isSideBarShown =!isSideBarShown}
+        )
     }
+    else MyNav(NavUlStyle.toModifier())
 }
 
 val NavUlStyle by ComponentStyle {
     base { Modifier
+        .zIndex(5)
         .listStyle("none")
         .display(DisplayStyle.Flex)
         .alignItems(AlignItems.Center)
@@ -149,24 +126,27 @@ val NavUlStyle by ComponentStyle {
 }
 
 val NavUlColumnStyle by NavUlStyle.addVariant{
-    base { Modifier.flexDirection(FlexDirection.Column) }
-}
-
-
-val NavUlRowStyle by NavUlStyle.addVariant {
-    cssRule(CSSMediaQuery.MediaFeature("max-width", 850.px)) {
-        Modifier.display(DisplayStyle.None)
+    base { Modifier
+        .flexDirection(FlexDirection.Column)
+        .width(300.px)
+        .height(100.vh)
+        .position(Position.Fixed)
+        .top(0.px)
+        .left(0.px) /* Offscreen by default */
+        .transition(CSSTransition(
+            "left", 0.3.s,
+            TransitionTimingFunction.EaseInOut
+        ))
     }
 }
+
+
 
 val HamburgerStyle by ComponentStyle {
     base { Modifier
         .cursor(Cursor.Pointer)
         .margin(leftRight = 10.px)
-        .display(DisplayStyle.None)
-    }
-    cssRule(CSSMediaQuery.MediaFeature("max-width", 850.px)) {
-        Modifier.display(DisplayStyle.Block)
+        .display(DisplayStyle.Block)
     }
 }
 
