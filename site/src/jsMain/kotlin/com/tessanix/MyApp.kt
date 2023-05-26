@@ -27,7 +27,7 @@ fun initializeBreakpoints(ctx: InitSilkContext) {
     ctx.theme.breakpoints = BreakpointSizes(
         sm = 500.px,
         md = 850.px,
-        lg = 1200.px,
+        lg = 1100.px,
         xl = 1600.px
     )
 }

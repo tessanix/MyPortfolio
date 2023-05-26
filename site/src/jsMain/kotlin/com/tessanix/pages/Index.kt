@@ -97,13 +97,12 @@ fun HomePage() {
                 .fontFamily("Arial Black")
                 .margin(topBottom = 90.px)
                 .toAttrs()
-            ) {
-                Text("Mon profil d'ingénieur logiciel:")
-            }
+            ) { Text("Mon profil d'ingénieur logiciel:") }
             Row(
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+
                 SkillsWidget()
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Image(src = "CV_TESSAN_FR-1.png", modifier = Modifier.height(400.px).width(290.px))

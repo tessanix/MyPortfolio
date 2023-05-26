@@ -34,23 +34,18 @@ fun CircularProgressBar(
     height: Int = 160,
     barThickness: Int = 20
 ) {
-    var dashOffsetValue by remember { mutableStateOf(472.0) }
+    var dashOffsetValue by remember { mutableStateOf(100) }
     var launchCircularAnimation by remember { mutableStateOf(false) }
 
-    /*
-        value = 0% -> 472 dashOffset;
-        value = 100% -> 0 dashOffset;
-        value = x% -> 472 - x * (472/100) dashOffset
-     */
 
     LaunchedEffect(launchCircularAnimation) {
         if (launchCircularAnimation) {
             for (i in 1..value) {
-                dashOffsetValue = (472.0 - i * (472.0 / 100))
+                dashOffsetValue = 100-i
                 delay(35)
             }
         } else {
-            dashOffsetValue = 472.0
+            dashOffsetValue = 100
         }
     }
     Column(
@@ -126,7 +121,7 @@ fun CircularProgressBar(
                 name = "svg",
                 attrs = Modifier
                     .width(width.px)
-                    .height(width.px)
+                    .height(height.px)
                     .position(Position.Absolute)
                     .top(0.px)
                     .left(0.px)
@@ -149,15 +144,16 @@ fun CircularProgressBar(
                     })
                 }
                 Circle(
-                    cx = 80,
-                    cy = 80,
-                    r = 70,
+                    cx = width/2,
+                    cy = height/2,
+                    r = (width-barThickness)/2,
                     attrs = {
                         attr("stroke-linecap", "round") // make ends of the stroke (outline) of the circle round
                         attr("fill", "none") // make circle transparent
                         attr("stroke", "url(#GradientColor$idText)") // color the stroke (outline)
                         attr("stroke-width", "${barThickness}px")
-                        attr("stroke-dasharray", "472") // defines the pattern of dashes and gaps used in the stroke of the circle.
+                        attr("pathLength", "100")
+                        attr("stroke-dasharray", "100") // defines the pattern of dashes and gaps used in the stroke of the circle.
                         attr("stroke-dashoffset", "$dashOffsetValue") // the distance by which the stroke is offset
                     }
                 )
@@ -167,7 +163,6 @@ fun CircularProgressBar(
         Label(
             attrs = Modifier
                 .margin(20.px)
-                //.color(Color("#00000"))
                 .fontWeight(FontWeight.Bold)
                 .fontFamily("Arial")
                 .toAttrs()
