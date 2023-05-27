@@ -1,17 +1,14 @@
 package com.tessanix.components
 
 import androidx.compose.runtime.*
-import com.varabyte.kobweb.compose.css.CSSTransition
-import com.varabyte.kobweb.compose.css.Cursor
-import com.varabyte.kobweb.compose.css.TransitionProperty
+import com.tessanix.lang
+import com.varabyte.kobweb.compose.css.*
+import com.varabyte.kobweb.compose.css.functions.url
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.compose.ui.toAttrs
-import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.before
-import com.varabyte.kobweb.silk.components.style.toAttrs
-import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.components.style.*
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.CheckboxInput
 import org.jetbrains.compose.web.dom.Div
@@ -19,8 +16,8 @@ import org.jetbrains.compose.web.dom.Label
 
 
 @Composable
-fun ToggleButton(){
-    var checked by remember { mutableStateOf(false) }
+fun ToggleButton(onCheckedFunc: (Boolean)->Unit){
+    var checked by remember { mutableStateOf(true) }
 
     Label(
         //forId = inputId,
@@ -31,11 +28,19 @@ fun ToggleButton(){
             attrs = Modifier
                 //.id(inputId)
                 .display(DisplayStyle.None)
-                .onClick { checked = !checked }
+                .onClick {
+                    checked = !checked
+                    onCheckedFunc(checked)
+                }
                 .then(CheckboxToggleButtonStyle.toModifier())
                 .toAttrs()
         )
-        Div( attrs = DivToggleButtonStyle.toAttrs() )
+        Div( attrs =
+            if(lang=="french")
+                DivToggleButtonStyle.toAttrs(DivToggleFrenchBefore)
+            else
+                DivToggleButtonStyle.toAttrs(DivToggleEnglishBefore)
+        )
     }
 }
 
@@ -70,14 +75,27 @@ val DivToggleButtonStyle by ComponentStyle {
         .width(height)
         .boxShadow(0.px, 0.px, 10.px, color = Color("rgba(0,0,0,0.25)"))
         .borderRadius(50.percent)
-        .backgroundColor(Colors.White)
         .top(0.px)
         .left(0.px)
+        .backgroundRepeat(BackgroundRepeat.NoRepeat)
+        .backgroundSize(BackgroundSize.Contain)
         .transition(
             CSSTransition(
-                TransitionProperty.of("transform"),
-                0.2.s
+                "transform",
+                0.5.s
             )
         )
+    }
+}
+
+val DivToggleFrenchBefore by DivToggleButtonStyle.addVariant{
+    before {
+        Modifier.backgroundImage(url("franceFlag.png"))
+    }
+}
+
+val DivToggleEnglishBefore by DivToggleButtonStyle.addVariant{
+    before {
+        Modifier.backgroundImage(url("united-statesFlag.png"))
     }
 }

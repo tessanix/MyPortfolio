@@ -1,6 +1,7 @@
 package com.tessanix.components
 
 import androidx.compose.runtime.*
+import com.tessanix.lang
 import com.varabyte.kobweb.compose.css.CSSTransition
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.Overflow
@@ -47,7 +48,7 @@ fun SkillsWidgetGrid(progressBarWidth: Int, progressBarHeight: Int) {
         H3( TextSkillsStyle.toModifier()
             .gridArea("1", "1", "2", "2")
             .toAttrs()
-        ){ Text("Langages: ") }
+        ){ Text( if(lang=="french") "Langages:" else "Languages:") }
 
         programmingLanguages[0](Modifier.gridArea("1", "2", "2", "3"), progressBarWidth, progressBarHeight)
         programmingLanguages[1](Modifier.gridArea("1", "3", "2", "4"), progressBarWidth, progressBarHeight)
@@ -56,7 +57,7 @@ fun SkillsWidgetGrid(progressBarWidth: Int, progressBarHeight: Int) {
         H3( TextSkillsStyle.toModifier()
             .gridArea("2", "1", "3", "2")
             .toAttrs()
-        ){ Text("Positions: ") }
+        ){ Text("Positions:") }
 
         positions[0](Modifier.gridArea("2", "2", "3", "3"), progressBarWidth, progressBarHeight)
         positions[1](Modifier.gridArea("2", "3", "3", "4"), progressBarWidth, progressBarHeight)
@@ -65,7 +66,7 @@ fun SkillsWidgetGrid(progressBarWidth: Int, progressBarHeight: Int) {
             TextSkillsStyle.toModifier()
             .gridArea("3", "1", "4", "2")
             .toAttrs()
-        ){ Text("Autres Technologies: ") }
+        ){ Text(if(lang=="french") "Autres Technologies:" else "Other Technologies:" ) }
 
         otherTechs[0](Modifier.gridArea("3", "2", "4", "3"), progressBarWidth, progressBarHeight)
         otherTechs[1](Modifier.gridArea("3", "3", "4", "4"), progressBarWidth, progressBarHeight)
@@ -78,11 +79,11 @@ fun SkillsWidgetCompact(progressBarWidth:Int, progressBarHeight:Int) {
         verticalArrangement = Arrangement.SpaceAround,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        H3( TextSkillsStyle.toAttrs() ){ Text("Langages: ") }
+        H3( TextSkillsStyle.toAttrs() ){ Text(if(lang=="french") "Langages:" else "Languages:") }
         Slider(progressBarWidth, progressBarHeight, programmingLanguages)
-        H3( TextSkillsStyle.toAttrs() ){ Text("Positions: ") }
+        H3( TextSkillsStyle.toAttrs() ){ Text("Positions:") }
         Slider(progressBarWidth, progressBarHeight, positions)
-        H3( TextSkillsStyle.toAttrs() ){ Text("Autres Technologies: ") }
+        H3( TextSkillsStyle.toAttrs() ){ Text(if(lang=="french") "Autres Technologies:" else "Other Technologies:" ) }
         Slider(progressBarWidth, progressBarHeight, otherTechs)
     }
 }

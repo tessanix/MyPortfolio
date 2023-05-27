@@ -5,6 +5,7 @@ import com.tessanix.D_PATH_WAVE
 import com.tessanix.components.CircularMotionCanvasAnimation
 import com.tessanix.components.NavBar
 import com.tessanix.components.SkillsWidget
+import com.tessanix.lang
 import com.varabyte.kobweb.compose.css.BackgroundRepeat
 import com.varabyte.kobweb.compose.css.BackgroundSize
 import com.varabyte.kobweb.compose.css.TextAlign
@@ -78,11 +79,19 @@ fun HomePage() {
                 .margin(topBottom = 150.px)
                 .toAttrs()
             ) {
-                Text("Salut! Moi, Tessan, je suis la solution qu'il te faut!"); Br()
-                Text("En quelques mots:"); Br()
-                Text("- Passioné"); Br()
-                Text("- Curieux"); Br()
-                Text("- Optimiste"); Br()
+                if(lang=="french") {
+                    Text("Salut! Moi, Tessan, je suis la solution qu'il te faut!"); Br()
+                    Text("En quelques mots:"); Br()
+                    Text("- Passioné"); Br()
+                    Text("- Curieux"); Br()
+                    Text("- Optimiste"); Br()
+                }else{
+                    Text("Hi! I, Tessan, am the solution you need!"); Br()
+                    Text("In few words:"); Br()
+                    Text("- Passionate"); Br()
+                    Text("- Curious"); Br()
+                    Text("- Optimistic"); Br()
+                }
             }
         }
 
@@ -97,7 +106,7 @@ fun HomePage() {
                 .fontFamily("Arial Black")
                 .margin(topBottom = 90.px)
                 .toAttrs()
-            ) { Text("Mon profil d'ingénieur logiciel:") }
+            ) { Text(if(lang=="french") "Mon profil d'ingénieur logiciel:" else "My software engineer profile:") }
             Row(
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically
@@ -114,7 +123,7 @@ fun HomePage() {
                       .backgroundColor(Color("rgba(250,250,250,0.3)"))
                       .borderRadius(5.px)
                       .toAttrs()
-                    ) { Text("Téléchercher le CV") }
+                    ) { Text(if(lang=="french") "Téléchercher le CV" else "Download CV") }
                 }
             }
         }
@@ -129,7 +138,7 @@ fun HomePage() {
                 .margin(50.px)
                 .fontFamily("Arial")
                 .toAttrs()
-            ){ Text("Projets") }
+            ){ Text(if(lang=="french") "Projets" else "Projects") }
             Row(
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically
@@ -195,7 +204,7 @@ fun HomePage() {
                 .fontFamily("Arial")
                 .gridArea("3", "1", "4", "2")
                 .toAttrs()
-            ){ Text("Merci de votre visite!") }
+            ){ Text( if(lang=="french") "Merci de votre visite!" else "Thank you for your visit!") }
 
             Column(
                 verticalArrangement = Arrangement.SpaceAround,
@@ -220,7 +229,7 @@ fun HomePage() {
 
                 TextArea(
                     attrs = {
-                        defaultValue("Ecris ton message ...") // Uncontrolled mode
+                        defaultValue(if(lang=="french") "Ecris ton message ..." else "Write your message ...") // Uncontrolled mode
                         style {
                             color(Colors.White)
                             backgroundColor(Color("rgba(250,250,250,0.3)"))
@@ -241,7 +250,7 @@ fun HomePage() {
                         .borderRadius(5.px)
                         .toAttrs()
                 ) {
-                    Text("Envoyer")
+                    Text(if(lang=="french") "Envoyer" else "Send")
                 }
             }
         }

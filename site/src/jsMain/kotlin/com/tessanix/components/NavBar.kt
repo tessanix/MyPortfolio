@@ -1,6 +1,7 @@
 package com.tessanix.components
 
 import androidx.compose.runtime.*
+import com.tessanix.lang
 import com.varabyte.kobweb.compose.css.*
 import com.varabyte.kobweb.compose.css.JustifyContent
 import com.varabyte.kobweb.compose.ui.Modifier
@@ -8,6 +9,8 @@ import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.toAttrs
+import com.varabyte.kobweb.silk.components.icons.fa.FaX
+import com.varabyte.kobweb.silk.components.icons.fa.IconSize
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.addVariant
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
@@ -39,6 +42,7 @@ fun CustomLi(text:String){
             .margin(leftRight = 24.px)
             .padding(16.px)
             .borderRadius(50.percent)
+            //.border(1.px, LineStyle.Solid, Color("rgba(250,250,250, $alpha1)"))
             .styleModifier {
                 property(
                     "box-shadow",
@@ -55,20 +59,51 @@ fun CustomLi(text:String){
 }
 
 @Composable
-fun MyNav( modifier:Modifier ) { //variant: ComponentVariant){
-    Nav {
-        Ul(modifier.toAttrs()) {
-            CustomLi("Haut de page")
-            CustomLi("Mes compétences")
-            CustomLi("Mes travaux")
-            CustomLi("Me laisser un message")
+fun MyNav( addX:Boolean=false, modifier:Modifier, onCloseNav:(()->Unit)?=null ) { //variant: ComponentVariant){
+    Nav(modifier.toAttrs()) {
+        if(addX && onCloseNav!=null)
+            FaX(
+                modifier = Modifier
+                    .display(DisplayStyle.Flex)
+                    .justifyContent(JustifyContent.Center)
+                    .alignItems(AlignItems.Center)
+                    .width(100.percent)
+                    .height(50.px)
+                    .margin(top=20.px)
+                    .color(Colors.White)
+                    .cursor(Cursor.Pointer)
+                    .onClick { onCloseNav() },
+                size = IconSize.LG
+            )
+
+        Ul(
+            Modifier
+            .listStyle("none")
+            .display(DisplayStyle.Flex)
+            .alignItems(AlignItems.Center)
+            .flexDirection(if(addX) FlexDirection.Column else FlexDirection.Row)
+            .justifyContent(JustifyContent.SpaceAround)
+            .margin(topBottom = 24.px)
+            .padding(0.px).toAttrs()
+        ) {
+            if(lang=="french") {
+                CustomLi("Haut de page")
+                CustomLi("Mes compétences")
+                CustomLi("Mes travaux")
+                CustomLi("Me laisser un message")
+            }else{
+                CustomLi("Page top")
+                CustomLi("My skills")
+                CustomLi("My work")
+                CustomLi("Leave me a message")
+            }
             Li(Modifier
                 .display(DisplayStyle.Flex)
                 .alignItems(AlignItems.Center)
                 .margin(leftRight = 24.px)
                 .padding(16.px)
                 .toAttrs()
-            ){ ToggleButton() }
+            ){ ToggleButton(onCheckedFunc = { lang = if(it) "french" else "english" }) }
         }
     }
 }
@@ -103,31 +138,31 @@ fun NavBar(){
 
     if(bp < Breakpoint.MD){
         MyNav(
-            NavUlStyle.toModifier(NavUlColumnStyle)
-            .left(if(isSideBarShown) 0.px else (-300).px)
+            addX =true,
+            modifier = NavStyle.toModifier(NavColumnStyle)
+            .left(if(isSideBarShown) 0.px else (-300).px),
+            onCloseNav = { isSideBarShown = false }
         )
         Hamburger(
             isSideBarShown = isSideBarShown,
             showSideBarFunc = {isSideBarShown =!isSideBarShown}
         )
     }
-    else MyNav(NavUlStyle.toModifier())
+    else MyNav(modifier = NavStyle.toModifier())
 }
 
-val NavUlStyle by ComponentStyle {
+val NavStyle by ComponentStyle {
     base { Modifier
-        .zIndex(5)
-        .listStyle("none")
+        .zIndex(3)
         .display(DisplayStyle.Flex)
         .alignItems(AlignItems.Center)
-        .justifyContent(JustifyContent.SpaceAround)
-        .margin(topBottom = 24.px)
     }
 }
 
-val NavUlColumnStyle by NavUlStyle.addVariant{
+val NavColumnStyle by NavStyle.addVariant{
     base { Modifier
         .flexDirection(FlexDirection.Column)
+        .backgroundColor(Color("rgba(10,10,10,0.2)"))
         .width(300.px)
         .height(100.vh)
         .position(Position.Fixed)
@@ -139,8 +174,6 @@ val NavUlColumnStyle by NavUlStyle.addVariant{
         ))
     }
 }
-
-
 
 val HamburgerStyle by ComponentStyle {
     base { Modifier

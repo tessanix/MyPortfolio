@@ -1,4 +1,4 @@
-package com.tessanix.components
+//package com.tessanix.components
 
 import androidx.compose.runtime.Composable
 import com.tessanix.lang
@@ -15,8 +15,6 @@ import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.CanvasState
 import org.w3c.dom.CanvasTextAlign
 import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.sin
 import kotlin.random.Random
 
 fun CanvasState.save(block: () -> Unit) {
@@ -50,23 +48,15 @@ fun drawText(
 class Particle(
     private var x: Double,
     private var y: Double,
-    private val initialX: Double = x,
-    private val initialY: Double = y,
     private val radius: Double,
-    private var radians: Double = Random.nextDouble()*PI*2,
-    private val velocity: Double = 0.01,
-    private val distanceFromCenter: Double,
     private val color: String
 ) {
     fun update( renderScope: RenderScope<CanvasRenderingContext2D> ) {
-        radians += velocity
-        x = initialX + cos(radians)*distanceFromCenter
-        y = initialY + sin(radians)*distanceFromCenter
         draw(renderScope)
     }
-    private fun draw(renderScope: RenderScope<CanvasRenderingContext2D>) {
+    private fun draw(renderScope: RenderScope<CanvasRenderingContext2D> ) {
         renderScope.ctx.beginPath()
-        renderScope.ctx.arc(x, y, radius, 0.0, PI*2, false)
+        renderScope.ctx.arc(x, y, radius, 0.0, PI*2, false )
         renderScope.ctx.shadowColor = color
         renderScope.ctx.shadowBlur = 15.0
         renderScope.ctx.fillStyle = color
@@ -105,10 +95,6 @@ fun CircularMotionCanvasAnimation(
     vhOffset: Int = 50,
     backgroundColor: String
 ) {
-    val width = 2000
-    val height = 1500
-    val heightOfViewPort = height - (height/(100+vhOffset))*vhOffset
-
     val yScaleFactorRect = 3.0
     val xScaleFactorRect = 2.0
 
@@ -124,17 +110,14 @@ fun CircularMotionCanvasAnimation(
     val particlesTheme = listOf("#2185C5", "#7ECEFD", "#FFF6E5", "#FF7F66")
 
     val particles = buildList {
-//        val increasedWith = window.innerWidth + 700
-//        val increasedHeight = window.innerWidth + 700
-        console.log(window.innerHeight)
-        console.log(window.innerWidth)
+        val increasedWith = window.innerWidth + 700
+        val increasedHeight = window.innerHeight + 700
         for(i in 0 until n){
              this.add(
                  Particle(
-                     x = width/2.0,
-                     y =  heightOfViewPort/2.0,
+                     x = Random.nextDouble() * increasedWith - increasedWith/2,
+                     y = Random.nextDouble() * increasedHeight - increasedHeight/2,
                      radius = Random.nextDouble() * 2,
-                     distanceFromCenter = Random.nextDouble(150.0,width*1.2),
                      color = particlesTheme.random()
                  )
              )
@@ -143,8 +126,8 @@ fun CircularMotionCanvasAnimation(
 
     Canvas2d(
         // canvas buffer dimensions
-        width = width,
-        height = height,
+        width = 2000,
+        height = 1500,
         modifier = Modifier
             .onClick { mouseDown = !mouseDown }
 //            .onMouseDown {  mouseDown = true }
@@ -161,8 +144,8 @@ fun CircularMotionCanvasAnimation(
         ctx.fillRect(0.0, 0.0, canvasWith, canvasHeight)
 
         ctx.save {
-            //ctx.translate(canvasWith/2, canvasHeightOnViewPort/2 )
-            //ctx.rotate(radians)
+            ctx.translate(canvasWith/2, canvasHeightOnViewPort/2 )
+            ctx.rotate(radians)
             particles.forEach { it.update(this) }
         }
 
