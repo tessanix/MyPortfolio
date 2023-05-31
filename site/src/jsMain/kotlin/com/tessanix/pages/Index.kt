@@ -1,7 +1,10 @@
 package com.tessanix.pages
 
 import androidx.compose.runtime.Composable
-import com.tessanix.components.*
+import com.tessanix.components.AnimatedParagraphe
+import com.tessanix.components.CircularMotionCanvasAnimation
+import com.tessanix.components.NavBar
+import com.tessanix.components.SkillsWidget
 import com.tessanix.lang
 import com.varabyte.kobweb.compose.css.*
 import com.varabyte.kobweb.compose.css.functions.LinearGradient
@@ -14,11 +17,6 @@ import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
-import com.varabyte.kobweb.compose.ui.modifiers.backgroundImage
-import com.varabyte.kobweb.compose.ui.modifiers.backgroundRepeat
-import com.varabyte.kobweb.compose.ui.modifiers.backgroundSize
-import com.varabyte.kobweb.compose.ui.modifiers.color
-import com.varabyte.kobweb.compose.ui.modifiers.textAlign
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
@@ -47,12 +45,13 @@ fun HomePage() {
     ){
         Section (
             Modifier
-            .width(100.percent)
-            .height((100+vhOffset).vh)
-            .display(DisplayStyle.Flex)
-            .flexDirection(FlexDirection.Column)
-            .justifyContent(JustifyContent.Center)
-            .toAttrs()
+                .id("top-page")
+                .width(100.percent)
+                .height((100+vhOffset).vh)
+                .display(DisplayStyle.Flex)
+                .flexDirection(FlexDirection.Column)
+                .justifyContent(JustifyContent.Center)
+                .toAttrs()
         ) {
             CircularMotionCanvasAnimation(vhOffset = vhOffset, backgroundColor = backgroundColor)
         }
@@ -76,13 +75,23 @@ fun HomePage() {
                     .margin(top=150.px)
                     .toAttrs()
             ) {
-                Text("Salut! Moi, Tessan, je suis la solution qu'il te faut!"); Br()
-                Text("En quelques mots:"); Br()
+                if(lang=="french"){
+                    Text("Salut! Moi, Tessan, je suis la solution qu'il te faut!"); Br()
+                    Text("En quelques mots:"); Br()
+                }
+                else{
+                    Text("Hi! I, Tessan, am the solution you need!"); Br()
+                    Text("In few words:"); Br()
+                }
             }
-            AnimatedParagraphe(listOf("- Passioné", "- Curieux", "- Optimiste"))
+            AnimatedParagraphe(
+                if(lang=="french") listOf("- Passioné", "- Curieux", "- Optimiste")
+                else listOf("- Passionate", "- Curious", "- Optimistic")
+            )
         }
 
         Section(Modifier
+            .id("my-skills")
             .fillMaxWidth()
             .color(Colors.White)
             .textAlign(TextAlign.Center)
@@ -127,6 +136,7 @@ fun HomePage() {
         }
 
         Section(Modifier
+            .id("my-work")
             .fillMaxWidth()
             .minWidth(900.px)
             .padding(bottom = 150.px)
@@ -169,6 +179,7 @@ fun HomePage() {
         }
 
         Footer(Modifier
+            .id("contact")
             .fillMaxWidth()
             .minHeight(600.px)
             .display(DisplayStyle.Flex)

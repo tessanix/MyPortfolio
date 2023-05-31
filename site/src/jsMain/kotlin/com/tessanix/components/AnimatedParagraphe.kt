@@ -4,7 +4,6 @@ import androidx.compose.runtime.*
 import com.varabyte.kobweb.compose.css.AnimationIterationCount
 import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.css.Width
-import com.varabyte.kobweb.compose.dom.ref
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Modifier
@@ -27,6 +26,8 @@ import org.jetbrains.compose.web.dom.H3
 @Composable
 fun AnimatedParagraphe(words: List<String>) {
     var currentWord by remember { mutableStateOf(0) }
+    //var largestChildWidth by remember { mutableStateOf(0) }
+
     H3(
         Modifier
             .fontFamily("Arial Black")
@@ -34,7 +35,15 @@ fun AnimatedParagraphe(words: List<String>) {
             .toAttrs()
     ) {
 
-        Column {
+        Column(
+//            ref = ref{ columnParentElement ->
+//                val list = columnParentElement.children.asList()
+//                largestChildWidth = list.maxOf { spanChildElement ->
+//                    (spanChildElement.firstChild as HTMLElement).offsetWidth
+//                }
+//            },
+            modifier = Modifier.width(125.px)//largestChildWidth.px)
+        ) {
             words.forEachIndexed { index, word ->
                 WritingLineAnimatedText(
                     text = word,
@@ -56,21 +65,21 @@ fun WritingLineAnimatedText(
     isWritten: Boolean,
     delayAtEnd: Long = 0L,
 ) {
-  // lateinit val letterSize : Double
-
+    val maxChildWidth = 125 //by remember{ mutableStateOf(0)}
     Box(
 //        ref = ref{
-//            letterSize = window.getComputedStyle(it).fontSize.removeSuffix("px").toDouble()
+//            childWidth = (it.firstElementChild as HTMLElement).offsetWidth
 //        },
         modifier = ContainerTextStyle.toModifier()
             .height(30.px)
-            .thenIf(!writingCondition, Modifier.width(if (isWritten) 130.px else 0.px))
+            .width((maxChildWidth+2).px)
+            .thenIf(!writingCondition, Modifier.width(if (isWritten) (maxChildWidth+2).px else 0.px))
             .thenIf(
                 writingCondition,
                 Modifier
                     .animation(
                     TypingCursorAnimation.toAnimation(
-                        duration = 4.s,
+                        duration = 2.5.s,
                         timingFunction = steps(text.length+1),
                         iterationCount = AnimationIterationCount.of(1)
                     ),
@@ -98,8 +107,8 @@ val CursorBlinkingAnimation by Keyframes {
 }
 
 val TypingCursorAnimation by Keyframes {
-    from { Modifier.width(0.px) }
-    to { Modifier.width(130.px) }
+    from { Modifier.width(0.percent) }
+    to { Modifier.width(100.percent) }
 }
 
 val ContainerTextStyle by ComponentStyle.base {

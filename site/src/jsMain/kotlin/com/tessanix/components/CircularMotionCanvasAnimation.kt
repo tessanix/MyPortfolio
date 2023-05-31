@@ -3,18 +3,20 @@ package com.tessanix.components
 import androidx.compose.runtime.Composable
 import com.tessanix.lang
 import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.attrsModifier
 import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
+import com.varabyte.kobweb.compose.ui.modifiers.onMouseMove
 import com.varabyte.kobweb.compose.ui.modifiers.width
 import com.varabyte.kobweb.silk.components.graphics.Canvas2d
 import com.varabyte.kobweb.silk.components.graphics.ONE_FRAME_MS_60_FPS
 import com.varabyte.kobweb.silk.components.graphics.RenderScope
+import kotlinx.browser.window
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.vh
 import org.w3c.dom.*
 import kotlin.math.PI
 import kotlin.math.cos
+import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.random.Random
 
@@ -111,15 +113,25 @@ class CentralButton(
         renderScope.ctx.closePath()
     }
 
-    fun isMouseOver(mouseX: Double, mouseY: Double): Boolean{
-        console.log("mouse x: ", mouseX, " mouse y: ", mouseY)
-        console.log("center button x: ", x, " center button y: ", y)
+    fun isMouseOverEllipse(
+        mouseX: Double,
+        mouseY: Double,
+        canvasWidth: Double,
+        canvasHeightOnViewPort: Double
+    ): Boolean{
+        val rescaleFactorX = window.innerWidth/canvasWidth
+        val rescaleFactorY = window.innerHeight/canvasHeightOnViewPort
 
-        console.log("x-radius: ", x-radius, " x+radius: ", x+radius)
-        console.log("y-radius: ", y-radius, " y+radius: ", y+radius)
+        val a = radius*rescaleFactorX
+        val b = radius*rescaleFactorY
+        val centerX = x*rescaleFactorX
+        val centerY = y*rescaleFactorY
+
+//        console.log("mouseX: ", mouseX,  "mouseY: ", mouseY)
+//        console.log("h: ", centerX , " k: ", centerY)
+//        console.log("ellipsis equ:", ((mouseX-centerX)/a).pow(2) + ((mouseY-centerY)/b).pow(2))
         return (
-            x-radius < mouseX && mouseX < x+radius &&
-            y-radius < mouseY && mouseY < y+radius
+            ((mouseX-centerX)/a).pow(2) + ((mouseY-centerY)/b).pow(2) <= 1.0
         )
     }
 }
@@ -173,17 +185,12 @@ fun CircularMotionCanvasAnimation(
         width = canvasWidth.toInt(),
         height = canvasHeight.toInt(),
         modifier = Modifier
-            .onClick {
-                mouseDown = !mouseDown
-//                console.log(it.nativeEvent)
-//                console.log(it)
-//                val canvasRect = (it.nativeEvent.target as HTMLCanvasElement)
-                console.log((it.target as HTMLCanvasElement).offsetLeft)
-               console.log("offsetX: ", it.offsetX, " offsetY: ", it.offsetY)
-//                console.log(it.screenX, " ", it.screenY)
-//
-//                console.log(canvasRect)
-                console.log(centralButton.isMouseOver(it.offsetX, it.offsetY))
+            .onClick { mouseDown = !mouseDown }
+            .onMouseMove {
+                if(centralButton.isMouseOverEllipse(it.offsetX, it.offsetY, canvasWidth, canvasHeightOnViewPort))
+                    (it.target as HTMLCanvasElement).style.cursor = "pointer"
+                else
+                    (it.target as HTMLCanvasElement).style.cursor = "default"
             }
             .width(100.percent)
             .height((100+vhOffset).vh),

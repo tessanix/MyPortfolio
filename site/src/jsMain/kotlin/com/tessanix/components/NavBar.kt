@@ -22,7 +22,10 @@ import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.dom.*
 
 @Composable
-fun CustomLi(text:String){
+fun CustomLi(
+    text:String,
+    href: String
+){
 
     var alpha1 by remember { mutableStateOf(0.0) }
 
@@ -51,11 +54,18 @@ fun CustomLi(text:String){
                 )
             }
             .fontFamily("Arial")
-            .color(Colors.White)
             .cursor(Cursor.Pointer)
             .fontSize(FontSize.XLarge)
             .toAttrs()
-    ){ Text(text) }
+    ){
+        A(
+            href = href,
+            attrs = Modifier
+                .textDecorationLine(TextDecorationLine.None)
+                .color(Colors.White)
+                .toAttrs()
+        ) { Text(text) }
+    }
 }
 
 @Composable
@@ -86,17 +96,12 @@ fun MyNav( addX:Boolean=false, modifier:Modifier, onCloseNav:(()->Unit)?=null ) 
             .margin(topBottom = 24.px)
             .padding(0.px).toAttrs()
         ) {
-            if(lang=="french") {
-                CustomLi("Haut de page")
-                CustomLi("Mes compétences")
-                CustomLi("Mes travaux")
-                CustomLi("Me laisser un message")
-            }else{
-                CustomLi("Page top")
-                CustomLi("My skills")
-                CustomLi("My work")
-                CustomLi("Leave me a message")
-            }
+
+            CustomLi(if(lang=="french") "Haut de page" else "Page top", "#top-page")
+            CustomLi(if(lang=="french") "Mes compétences" else "My skills", "#my-skills")
+            CustomLi(if(lang=="french") "Mes travaux" else "My work", "#my-work")
+            CustomLi(if(lang=="french") "Me laisser un message" else "Leave me a message", "#contact")
+
             Li(Modifier
                 .display(DisplayStyle.Flex)
                 .alignItems(AlignItems.Center)
