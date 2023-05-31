@@ -7,7 +7,6 @@ import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.*
-import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.toAttrs
 import kotlinx.browser.window
 import kotlinx.coroutines.delay
@@ -42,7 +41,7 @@ fun CircularProgressBar(
         if (launchCircularAnimation) {
             for (i in 1..value) {
                 dashOffsetValue = 100-i
-                delay(35)
+                delay(20)
             }
         } else {
             dashOffsetValue = 100
@@ -79,43 +78,15 @@ fun CircularProgressBar(
                 Modifier
                     .width(width.px)
                     .height(height.px)
-                    .borderRadius(50.percent)
                     .display(DisplayStyle.Flex)
                     .justifyContent(JustifyContent.Center)
                     .alignItems(AlignItems.Center)
-                    .styleModifier {
-                        property(
-                            "box-shadow",
-                            "6px 6px 10px -1px rgba(0, 0, 0, 0.15), " +
-                                    "-6px -6px 10px -1px rgba(255, 255, 255, 0.7)"
-                        )
-                    }
+                    .borderRadius(50.percent)
+                    .border(barThickness.px, LineStyle.Solid, rgb(68,68,68))
+                    .fontWeight(FontWeight.Bold)
+                    .fontFamily("Arial")
                     .toAttrs()
-            ) {
-                Div(
-                    Modifier
-                        .width((width - 2 * barThickness).px)
-                        .height((height - 2 * barThickness).px)
-                        .display(DisplayStyle.Flex)
-                        .justifyContent(JustifyContent.Center)
-                        .alignItems(AlignItems.Center)
-                        .borderRadius(50.percent)
-                        .fontWeight(FontWeight.Bold)
-                        .fontFamily("Arial")
-                        .styleModifier {
-                            property(
-                                "box-shadow",
-                                "inset 4px 4px 6px -1px rgba(0, 0, 0, 0.15), " +
-                                        "inset -4px -4px 6px -1px rgba(255, 255, 255, 0.7), " +
-                                        "-0.5px -0.5px 0px rgba(255, 255, 255, 1), " +
-                                        "0.5px 0.5px 0px rgba(0, 0, 0, 0.15), " +
-                                        "0px 12px 10px -10px rgba(0, 0, 0, 0.05)"
-                            )
-                        }.toAttrs()
-                ) {
-                    Text("${value}%")
-                }
-            }
+            ) { Text("${value}%") }
 
             SvgElement(
                 name = "svg",

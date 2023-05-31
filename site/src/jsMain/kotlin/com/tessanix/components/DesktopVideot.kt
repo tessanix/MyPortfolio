@@ -11,8 +11,6 @@ import com.varabyte.kobweb.silk.components.graphics.Image
 import org.jetbrains.compose.web.attributes.AttrsScope
 import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.percent
-import org.jetbrains.compose.web.css.px
-import org.jetbrains.compose.web.css.unaryMinus
 import org.jetbrains.compose.web.dom.Source
 import org.jetbrains.compose.web.dom.Video
 import org.w3c.dom.HTMLElement
