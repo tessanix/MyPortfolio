@@ -8,7 +8,10 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.compose.ui.styleModifier
+import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
+import com.varabyte.kobweb.silk.components.animation.Keyframes
+import com.varabyte.kobweb.silk.components.animation.toAnimation
 import com.varabyte.kobweb.silk.components.icons.fa.FaX
 import com.varabyte.kobweb.silk.components.icons.fa.IconSize
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
@@ -16,7 +19,6 @@ import com.varabyte.kobweb.silk.components.style.addVariant
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
-import kotlinx.coroutines.delay
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.dom.*
@@ -26,33 +28,30 @@ fun CustomLi(
     text:String,
     href: String
 ){
-
-    var alpha1 by remember { mutableStateOf(0.0) }
-
-    var launchBackgroundAnimation by remember { mutableStateOf(false) }
-
-    LaunchedEffect(launchBackgroundAnimation) {
-        launchBackgroundAnimation = false
-        while(0.0 < alpha1){
-            alpha1 -= 0.025; delay(30)
-        }
-    }
+    var isMouseOver by remember { mutableStateOf<Boolean?>(null) }
 
     Li(
         Modifier
-            .onMouseEnter { alpha1 = 0.6 }
-            .onMouseLeave { launchBackgroundAnimation = true }
+            .onMouseEnter { isMouseOver = true }
+            .onMouseLeave { isMouseOver = false }
             .margin(leftRight = 24.px)
             .padding(16.px)
             .borderRadius(50.percent)
-            //.border(1.px, LineStyle.Solid, Color("rgba(250,250,250, $alpha1)"))
-            .styleModifier {
-                property(
-                    "box-shadow",
-                    "0px 0px 30px 35px rgba(250,250,250, $alpha1),"+
-                            "inset 0px 0px 9px 10px rgba(250,250,250, $alpha1)"
-                )
-            }
+            .thenIf( isMouseOver == true,
+                Modifier.styleModifier {
+                    property(
+                        "box-shadow",
+                        "0px 0px 30px 35px rgba(250,250,250, 0.8),"+
+                                "inset 0px 0px 9px 10px rgba(250,250,250, 0.8)"
+                    )
+                }
+            )
+            .thenIf( isMouseOver == false,
+                Modifier.animation(ShadowBrightnessChange.toAnimation(
+                    duration = 2.s,
+                    iterationCount = AnimationIterationCount.of(1),
+                ))
+            )
             .fontFamily("Arial")
             .cursor(Cursor.Pointer)
             .fontSize(FontSize.XLarge)
@@ -185,6 +184,27 @@ val HamburgerStyle by ComponentStyle {
         .cursor(Cursor.Pointer)
         .margin(leftRight = 10.px)
         .display(DisplayStyle.Block)
+    }
+}
+
+val ShadowBrightnessChange by Keyframes {
+    from { Modifier
+        .styleModifier {
+            property(
+                "box-shadow",
+                "0px 0px 30px 35px rgba(250,250,250, 0.8),"+
+                        "inset 0px 0px 9px 10px rgba(250,250,250, 0.8)"
+            )
+        }
+    }
+    to { Modifier
+        .styleModifier {
+            property(
+                "box-shadow",
+                "0px 0px 30px 35px rgba(250,250,250, 0),"+
+                        "inset 0px 0px 9px 10px rgba(250,250,250, 0)"
+            )
+        }
     }
 }
 

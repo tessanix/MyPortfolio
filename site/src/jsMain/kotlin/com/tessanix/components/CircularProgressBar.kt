@@ -15,10 +15,8 @@ import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Label
 import org.jetbrains.compose.web.dom.Text
-import org.jetbrains.compose.web.svg.Circle
-import org.jetbrains.compose.web.svg.LinearGradient
-import org.jetbrains.compose.web.svg.Stop
-import org.jetbrains.compose.web.svg.SvgElement
+import org.jetbrains.compose.web.svg.*
+import org.w3c.dom.svg.SVGElement
 
 
 @OptIn(ExperimentalComposeWebSvgApi::class)

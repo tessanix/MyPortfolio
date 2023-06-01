@@ -131,7 +131,7 @@ class CentralButton(
 //        console.log("h: ", centerX , " k: ", centerY)
 //        console.log("ellipsis equ:", ((mouseX-centerX)/a).pow(2) + ((mouseY-centerY)/b).pow(2))
         return (
-            ((mouseX-centerX)/a).pow(2) + ((mouseY-centerY)/b).pow(2) <= 1.0
+            ((mouseX-centerX)/a).pow(2) + ((mouseY-centerY)/b).pow(2) < 1.0
         )
     }
 }

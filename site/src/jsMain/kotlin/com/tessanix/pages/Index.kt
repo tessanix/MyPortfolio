@@ -15,6 +15,7 @@ import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.attrsModifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.compose.ui.toAttrs
@@ -27,7 +28,9 @@ import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.JustifyContent
+import org.jetbrains.compose.web.css.keywords.auto
 import org.jetbrains.compose.web.dom.*
+import org.w3c.dom.svg.SVGElement
 
 
 @Page
@@ -164,17 +167,25 @@ fun HomePage() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Div (
-                    attrs = Modifier
+                    attrs = ImageContainerProjectStyle.toModifier()
                         .onClick { ctx.router.navigateTo("KaraokeAppProject") }
-                        .then(DivProjectStyle.toModifier(DivProjectKaraokeAppVariant))
                         .toAttrs()
-                ) {  }
+                ) {
+                    Image(
+                        src = "logoAppInSmartphone3.svg",
+                        modifier = ImageProjectStyle.toModifier().width(200.px)
+                    )
+                }
                 Div (
-                    attrs = Modifier
+                    attrs = ImageContainerProjectStyle.toModifier()
                         .onClick { ctx.router.navigateTo("KaraokeAppProject") }
-                        .then(DivProjectStyle.toModifier(DivProjectPortfolioVariant))
                         .toAttrs()
-                ) {  }
+                ) {
+                    Image(
+                        src = "websiteOnLaptop1.svg",
+                        modifier = ImageProjectStyle.toModifier().height(300.px)
+                    )
+                }
             }
         }
 
@@ -264,30 +275,24 @@ fun HomePage() {
 
 }
 
-
-val DivProjectStyle by ComponentStyle{
+val ImageContainerProjectStyle by ComponentStyle{
     base { Modifier
+        .display(DisplayStyle.Flex)
+        .justifyContent(JustifyContent.Center)
         .margin(10.px)
         .width(30.percent)
-        .height(400.px)
-        .backgroundSize(BackgroundSize.of(100.percent, 100.percent))
-        .backgroundRepeat(BackgroundRepeat.NoRepeat)
+    }
+}
+
+val ImageProjectStyle by ComponentStyle{
+    base { Modifier
+        .margin(10.px)
+        .transition(
+            CSSTransition("transform", 2.s, TransitionTimingFunction.EaseInOut)
+        )
     }
     hover { Modifier.scale(1.3) }
-
-//    Breakpoint.XL {
-//
-//    }
 }
-
-val DivProjectKaraokeAppVariant by DivProjectStyle.addVariant {
-   base { Modifier.backgroundImage(url("logoAppInSmartphoneMockup.svg")) }
-}
-
-val DivProjectPortfolioVariant by DivProjectStyle.addVariant {
-    base { Modifier.backgroundImage(url("websiteInDesktopMockupRight.svg")) }
-}
-
 
 val TitleUnderlinedStyle by ComponentStyle {
     base {
