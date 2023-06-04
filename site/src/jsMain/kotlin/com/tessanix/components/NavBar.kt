@@ -7,15 +7,13 @@ import com.varabyte.kobweb.compose.css.JustifyContent
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
-import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
-import com.varabyte.kobweb.silk.components.animation.Keyframes
-import com.varabyte.kobweb.silk.components.animation.toAnimation
 import com.varabyte.kobweb.silk.components.icons.fa.FaX
 import com.varabyte.kobweb.silk.components.icons.fa.IconSize
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.addVariant
+import com.varabyte.kobweb.silk.components.style.after
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
@@ -28,7 +26,7 @@ fun CustomLi(
     text:String,
     href: String
 ){
-    var isMouseOver by remember { mutableStateOf<Boolean?>(null) }
+    var isMouseOver by remember { mutableStateOf(false) }
 
     Li(
         Modifier
@@ -36,22 +34,8 @@ fun CustomLi(
             .onMouseLeave { isMouseOver = false }
             .margin(leftRight = 24.px)
             .padding(16.px)
-            .borderRadius(50.percent)
-            .thenIf( isMouseOver == true,
-                Modifier.styleModifier {
-                    property(
-                        "box-shadow",
-                        "0px 0px 30px 35px rgba(250,250,250, 0.8),"+
-                                "inset 0px 0px 9px 10px rgba(250,250,250, 0.8)"
-                    )
-                }
-            )
-            .thenIf( isMouseOver == false,
-                Modifier.animation(ShadowBrightnessChange.toAnimation(
-                    duration = 2.s,
-                    iterationCount = AnimationIterationCount.of(1),
-                ))
-            )
+            .thenIf(isMouseOver, MenuTitleUnderlinedStyle.toModifier(MenuTitleUnderlinedGrow) )
+            .thenIf(!isMouseOver, MenuTitleUnderlinedStyle.toModifier(MenuTitleUnderlinedShrink) )
             .fontFamily("Arial")
             .cursor(Cursor.Pointer)
             .fontSize(FontSize.XLarge)
@@ -96,10 +80,10 @@ fun MyNav( addX:Boolean=false, modifier:Modifier, onCloseNav:(()->Unit)?=null ) 
             .padding(0.px).toAttrs()
         ) {
 
-            CustomLi(if(lang=="french") "Haut de page" else "Page top", "#top-page")
-            CustomLi(if(lang=="french") "Mes compétences" else "My skills", "#my-skills")
+            //CustomLi(if(lang=="french") "Haut de page" else "Page top", "#top-page")
+            CustomLi(if(lang=="french") "Mon profil" else "My profile", "#my-profile")
             CustomLi(if(lang=="french") "Mes travaux" else "My work", "#my-work")
-            CustomLi(if(lang=="french") "Me laisser un message" else "Leave me a message", "#contact")
+            CustomLi("Contact", "#contact")
 
             Li(Modifier
                 .display(DisplayStyle.Flex)
@@ -149,7 +133,7 @@ fun NavBar(){
         )
         Hamburger(
             isSideBarShown = isSideBarShown,
-            showSideBarFunc = {isSideBarShown =!isSideBarShown}
+            showSideBarFunc = {isSideBarShown = !isSideBarShown}
         )
     }
     else MyNav(modifier = NavStyle.toModifier())
@@ -175,8 +159,29 @@ val NavColumnStyle by NavStyle.addVariant{
         .transition(CSSTransition(
             "left", 0.3.s,
             TransitionTimingFunction.EaseInOut
-        ))
+        ))//.pointerEvents(PointerEvents.None)
     }
+}
+
+val MenuTitleUnderlinedStyle by ComponentStyle {
+    base { Modifier.position(Position.Relative) }
+    after {
+        Modifier.content("")
+            .position(Position.Absolute)
+            .left(5.percent)
+            .bottom((-5).px)
+            .backgroundColor(Colors.White)
+            .height(5.px)
+            .transition(CSSTransition("all", 1.5.s, AnimationTimingFunction.Ease ))
+    }
+}
+
+val MenuTitleUnderlinedGrow by MenuTitleUnderlinedStyle.addVariant {
+    after { Modifier.width(90.percent) }
+}
+
+val MenuTitleUnderlinedShrink by MenuTitleUnderlinedStyle.addVariant {
+    after { Modifier.width(0.percent) }
 }
 
 val HamburgerStyle by ComponentStyle {
@@ -187,24 +192,4 @@ val HamburgerStyle by ComponentStyle {
     }
 }
 
-val ShadowBrightnessChange by Keyframes {
-    from { Modifier
-        .styleModifier {
-            property(
-                "box-shadow",
-                "0px 0px 30px 35px rgba(250,250,250, 0.8),"+
-                        "inset 0px 0px 9px 10px rgba(250,250,250, 0.8)"
-            )
-        }
-    }
-    to { Modifier
-        .styleModifier {
-            property(
-                "box-shadow",
-                "0px 0px 30px 35px rgba(250,250,250, 0),"+
-                        "inset 0px 0px 9px 10px rgba(250,250,250, 0)"
-            )
-        }
-    }
-}
 

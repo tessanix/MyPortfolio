@@ -139,12 +139,14 @@ class CentralButton(
 
 @Composable
 fun CircularMotionCanvasAnimation(
-    n: Int = 1000,
+    canvasWidth: Double = 2000.0,
+    canvasHeight: Double = 1500.0,
+    nParticles: Int = 1000,
     vhOffset: Int = 50,
     backgroundColor: String
 ) {
-    val canvasWidth = 2000.0
-    val canvasHeight = 1500.0
+    console.log("width: ", canvasWidth, "height: ", canvasHeight)
+
     val canvasHeightOnViewPort = canvasHeight - (canvasHeight/(100+vhOffset))*vhOffset
 
     val yScaleFactorRect = 3.5
@@ -161,7 +163,7 @@ fun CircularMotionCanvasAnimation(
     val particlesTheme = listOf("#2185C5", "#7ECEFD", "#FFF6E5", "#FF7F66")
 
     val particles = buildList {
-        for(i in 0 until n){
+        for(i in 0 until nParticles){
              this.add(
                  Particle(
                      x = canvasWidth/2.0,
@@ -177,7 +179,7 @@ fun CircularMotionCanvasAnimation(
     val centralButton = CentralButton(
         canvasWidth/2,
         canvasHeightOnViewPort/2,
-        150.0,
+        canvasWidth*0.075,
     )
 
     Canvas2d(
@@ -209,7 +211,6 @@ fun CircularMotionCanvasAnimation(
             "rgba(88, 92, 150, $buttonAlpha)",
             this
             )
-
             drawText(
                 if(lang=="french") "Bienvenue!" else "Welcome\nto my place!",
                 48,
