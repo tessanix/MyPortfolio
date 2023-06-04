@@ -45,7 +45,7 @@ fun initializeBreakpoints(ctx: InitSilkContext) {
         sm = 650.px,
         md = 850.px,
         lg = 1100.px,
-        xl = 1600.px
+        xl = 2000.px
     )
 }
 

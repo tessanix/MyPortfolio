@@ -24,12 +24,12 @@ import org.jetbrains.compose.web.dom.H3
 
 
 @Composable
-fun AnimatedParagraphe(words: List<String>) {
+fun AnimatedParagraphe(modifier: Modifier, words: List<String>) {
     var currentWord by remember { mutableStateOf(0) }
     //var largestChildWidth by remember { mutableStateOf(0) }
 
     H3(
-        Modifier
+        modifier
             .fontFamily("Arial Black")
             .color(rgb(113, 187, 215))
             .toAttrs()

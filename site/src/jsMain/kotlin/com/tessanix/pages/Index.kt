@@ -31,6 +31,8 @@ import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.JustifyContent
 import org.jetbrains.compose.web.dom.*
+import org.jetbrains.compose.web.svg.LinearGradient
+import org.jetbrains.compose.web.svg.Stop
 
 
 @Page
@@ -126,6 +128,7 @@ fun HomePage() {
 
             H3(
                 Modifier
+                    .zIndex(2)
                     .fontFamily("Arial Black")
                     .color(rgb(113, 187, 215))
                     .margin(top=150.px)
@@ -141,19 +144,38 @@ fun HomePage() {
                 }
             }
             AnimatedParagraphe(
+                Modifier.zIndex(2),
                 if(lang=="french") listOf("- Passioné", "- Curieux", "- Optimiste")
                 else listOf("- Passionate", "- Curious", "- Optimistic")
             )
+
+
         }
 
         Section(Modifier
-            .id("my-profile")
-            .fillMaxWidth()
+            .id("my-profile").position(Position.Relative)
+            .fillMaxWidth().backgroundColor(Color(backgroundColor))
             .color(Colors.White)
             .textAlign(TextAlign.Center)
             .padding(10.px)
             .toAttrs()
         ) {
+            Div(
+                Modifier
+                    .position(Position.Absolute)
+                    .height(70.percent)
+                    .width(130.percent)
+                    .translateY((-100).percent)
+                    .left((-15).percent)
+                    .borderRadius(topLeft = 50.percent, topRight = 50.percent)
+                    .backgroundImage(
+                        linearGradient(dir = LinearGradient.Direction.ToTop) {
+                            add(Color(backgroundColor), stop = 0.percent)
+                            add(rgba(12, 12, 12, 0.2), stop = 80.percent)
+                        }
+                    ).pointerEvents(PointerEvents.None)
+                    .toAttrs()
+            ) {  }
             H1(TitleUnderlinedStyle
                 .toModifier()
                 .fontSize(2.em)

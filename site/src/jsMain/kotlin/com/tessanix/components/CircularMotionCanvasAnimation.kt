@@ -145,15 +145,15 @@ fun CircularMotionCanvasAnimation(
     vhOffset: Int = 50,
     backgroundColor: String
 ) {
-    console.log("width: ", canvasWidth, "height: ", canvasHeight)
+//    console.log("width: ", canvasWidth, "height: ", canvasHeight)
 
     val canvasHeightOnViewPort = canvasHeight - (canvasHeight/(100+vhOffset))*vhOffset
 
-    val yScaleFactorRect = 3.5
-    val xScaleFactorRect = 2.0
-
-    val yScaleFactorArc = 3.5
-    val xScaleFactorArc = 2.0
+//    val yScaleFactorRect = 3.5
+//    val xScaleFactorRect = 2.0
+//
+//    val yScaleFactorArc = 3.5
+//    val xScaleFactorArc = 2.0
 
     var mouseDown = false
     var buttonAlpha = 0.6
@@ -181,6 +181,8 @@ fun CircularMotionCanvasAnimation(
         canvasHeightOnViewPort/2,
         canvasWidth*0.075,
     )
+//    val specialWidth = 2000.0
+
 
     Canvas2d(
         // canvas buffer dimensions
@@ -221,34 +223,54 @@ fun CircularMotionCanvasAnimation(
             )
         }
 
-        ctx.save {
-            ctx.beginPath()
-            val grad = ctx.createRadialGradient(
-                (canvasWidth/2)/xScaleFactorRect, yScaleFactorRect*canvasHeight, 0.0,
-                (canvasWidth/2)/xScaleFactorRect, yScaleFactorRect*canvasHeight, canvasWidth/2
-            )
-            grad.addColorStop(1.0, "rgba(12,12,12, 0.2)")
-            grad.addColorStop(0.0, backgroundColor)
-            ctx.fillStyle = grad
-            ctx.setTransform(xScaleFactorRect, 0.0,0.0,1/yScaleFactorRect, 0.0, 0.0)
-            ctx.fillRect(0.0, canvasHeightOnViewPort*yScaleFactorRect, canvasWidth, yScaleFactorRect*(canvasHeight-canvasHeightOnViewPort))
-            ctx.closePath()
-        }
+//        ctx.save {
+//            ctx.beginPath()
+//            val grad = ctx.createRadialGradient(
+//                (canvasWidth/2)/xScaleFactorRect, yScaleFactorRect*canvasHeight, 0.0,
+//                (canvasWidth/2)/xScaleFactorRect, yScaleFactorRect*canvasHeight, canvasWidth/2
+//            )
+//            grad.addColorStop(1.0, "rgba(12,12,12, 0.2)")
+//            grad.addColorStop(0.0, backgroundColor)
+//            ctx.fillStyle = grad
+//            ctx.setTransform(xScaleFactorRect, 0.0,0.0,1/yScaleFactorRect, 0.0, 0.0)
+//            ctx.fillRect(0.0, canvasHeightOnViewPort*yScaleFactorRect, canvasWidth, yScaleFactorRect*(canvasHeight-canvasHeightOnViewPort))
+//            ctx.closePath()
+//        }
 
-        ctx.save {
-            ctx.beginPath()
-            val grad = ctx.createLinearGradient(
-                0.0, canvasHeight*0.9*yScaleFactorArc,
-                0.0, canvasHeight*yScaleFactorArc
-            )
-            grad.addColorStop(0.0, "rgba(12,20,30, 0.2)")
-            grad.addColorStop(1.0, backgroundColor)
-            ctx.fillStyle = grad
-            ctx.setTransform(xScaleFactorArc, 0.0,0.0,1/yScaleFactorArc, 0.0, 0.0)
-            ctx.arc(canvasWidth/2/xScaleFactorArc, canvasHeight*yScaleFactorArc, canvasWidth*1.2/yScaleFactorArc, 0.0,2*PI)
-            ctx.fill()
-            ctx.closePath()
-        }
+//        ctx.save {
+//            ctx.beginPath()
+//            val grad = ctx.createRadialGradient(
+//                (specialWidth/2)/xScaleFactorRect, yScaleFactorRect*canvasHeight, 0.0,
+//                (specialWidth/2)/xScaleFactorRect, yScaleFactorRect*canvasHeight, specialWidth*1.5/2
+//            )
+//            grad.addColorStop(1.0, "rgba(12,12,12, 0.2)")
+//            grad.addColorStop(0.0, backgroundColor)
+//
+//            ctx.fillStyle = grad
+//            ctx.setTransform(xScaleFactorRect, 0.0,0.0,1/yScaleFactorRect, 0.0, 0.0)
+//
+//            ctx.setTransform(xScaleFactorRect, 0.0,0.0,1/yScaleFactorRect, 0.0, 0.0)
+//            ctx.fillRect(0.0, canvasHeightOnViewPort*yScaleFactorRect, specialWidth, yScaleFactorRect*(canvasHeight-canvasHeightOnViewPort)*1.5)
+////            ctx.arc(canvasWidth/2/xScaleFactorArc, canvasHeight*yScaleFactorArc, canvasWidth*1.5/yScaleFactorArc, 0.0,2*PI)
+////            ctx.fill()
+//            ctx.closePath()
+//        }
+//
+//        ctx.save {
+//            ctx.beginPath()
+//            val grad = ctx.createLinearGradient(
+//                0.0, canvasHeight*0.8*yScaleFactorArc,
+//                0.0, canvasHeight*yScaleFactorArc
+//            )
+//            grad.addColorStop(0.0, "rgba(12,12,12, 0.2)")
+//            //grad.addColorStop(0.0, "rgba(12,20,30, 0.2)")
+//            grad.addColorStop(1.0, backgroundColor)
+//            ctx.fillStyle = grad
+//            ctx.setTransform(xScaleFactorArc, 0.0,0.0,1/yScaleFactorArc, 0.0, 0.0)
+//            ctx.arc(specialWidth/2/xScaleFactorArc, canvasHeight*yScaleFactorArc, specialWidth*2/yScaleFactorArc, 0.0,2*PI)
+//            ctx.fill()
+//            ctx.closePath()
+//        }
 
         if (mouseDown) {
             if (0.1 <= particlesAlpha ) particlesAlpha -= 0.01
