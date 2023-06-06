@@ -263,7 +263,6 @@ fun KaraokeAppCard(
 ) {
     Div(
         modifier
-            //.display(DisplayStyle.Block)
             .fontSize(2.em)
             .padding(1.em)
             .borderRadius(35.px)
