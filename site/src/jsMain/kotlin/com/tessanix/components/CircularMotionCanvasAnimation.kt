@@ -1,6 +1,6 @@
 package com.tessanix.components
 
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import com.tessanix.lang
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.height
@@ -10,6 +10,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.width
 import com.varabyte.kobweb.silk.components.graphics.Canvas2d
 import com.varabyte.kobweb.silk.components.graphics.ONE_FRAME_MS_60_FPS
 import com.varabyte.kobweb.silk.components.graphics.RenderScope
+import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import kotlinx.browser.window
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.vh
@@ -51,15 +52,22 @@ fun drawText(
 class Particle(
     private var x: Double,
     private var y: Double,
-    private val initialX: Double = x,
-    private val initialY: Double = y,
+    private var initialX: Double = x,
+    private var initialY: Double = y,
     private val radius: Double,
     private var radians: Double = Random.nextDouble()*PI*2,
-    private val velocity: Double = 0.006,
+    private val velocity: Double = 0.004,
     private val distanceFromCenter: Double,
     private val color: String
 ) {
-    fun update( renderScope: RenderScope<CanvasRenderingContext2D> ) {
+    fun update(
+        canvasWidth: Double,
+        canvasHeightOnViewPort: Double,
+        renderScope: RenderScope<CanvasRenderingContext2D>
+    ) {
+        if(initialX != canvasWidth/2.0) initialX = canvasWidth/2.0
+        if(initialY != canvasHeightOnViewPort/2.0) initialY = canvasHeightOnViewPort/2.0
+
         val lastX = x; val lastY = y
         radians += velocity
         x = initialX + cos(radians)*distanceFromCenter
@@ -82,31 +90,41 @@ class Particle(
     }
 }
 class CentralButton(
-    private val x: Double,
-    private val y: Double,
-    private val radius: Double,
+    private var x: Double,
+    private var y: Double,
+    private var radius: Double,
 ) {
-    fun draw(
-        gradColorStart : String,
-        gradColorEnd : String,
-        textColor: String,
+    fun update(
+        newX: Double,
+        newY: Double,
+        newRadius: Double,
+        alpha: Double,
+        renderScope: RenderScope<CanvasRenderingContext2D>
+    ){
+        x = newX
+        y = newY
+        radius = newRadius
+        draw(alpha, renderScope)
+    }
+    private fun draw(
+        alpha: Double,
         renderScope: RenderScope<CanvasRenderingContext2D>
     ){
         val grad = renderScope.ctx.createRadialGradient(
             x, y, 0.0,
             x, y, radius
         )
-        grad.addColorStop(0.0, gradColorStart)
-        grad.addColorStop(1.0, gradColorEnd)
+        grad.addColorStop(0.0, "rgba(88, 92, 150, $alpha)")
+        grad.addColorStop(1.0,"rgba(10, 10, 10, ${alpha-0.5})")
         renderScope.ctx.fillStyle = grad
 
         renderScope.ctx.beginPath()
         renderScope.ctx.arc(x, y, radius, 0.0, PI*2, false )
         renderScope.ctx.fillStyle = grad
         renderScope.ctx.fill()
-
         //Text
-        renderScope.ctx.fillStyle = textColor
+        renderScope.ctx.fillStyle = "rgba(88, 92, 150, $alpha)"
+
         renderScope.ctx.font = "Bold 40px sans-serif"
         renderScope.ctx.textAlign = CanvasTextAlign.CENTER
         renderScope.ctx.fillText(if(lang =="french") "Découvrir" else "Discover", x, y+10)
@@ -126,10 +144,6 @@ class CentralButton(
         val b = radius*rescaleFactorY
         val centerX = x*rescaleFactorX
         val centerY = y*rescaleFactorY
-
-//        console.log("mouseX: ", mouseX,  "mouseY: ", mouseY)
-//        console.log("h: ", centerX , " k: ", centerY)
-//        console.log("ellipsis equ:", ((mouseX-centerX)/a).pow(2) + ((mouseY-centerY)/b).pow(2))
         return (
             ((mouseX-centerX)/a).pow(2) + ((mouseY-centerY)/b).pow(2) < 1.0
         )
@@ -139,23 +153,22 @@ class CentralButton(
 
 @Composable
 fun CircularMotionCanvasAnimation(
-    canvasWidth: Double = 2000.0,
-    canvasHeight: Double = 1500.0,
+    bp: Breakpoint,
     nParticles: Int = 1000,
     vhOffset: Int = 50,
-    backgroundColor: String
 ) {
-//    console.log("width: ", canvasWidth, "height: ", canvasHeight)
+
+    var canvasWidth by remember{ mutableStateOf(window.innerWidth.toDouble()) }
+    var canvasHeight by remember{ mutableStateOf(window.innerHeight*1.5) }
+    var mouseDown by remember{ mutableStateOf(false) }
+
+    if(bp < Breakpoint.SM || bp < Breakpoint.MD || bp < Breakpoint.LG || bp < Breakpoint.XL || Breakpoint.XL <= bp){
+        canvasWidth = window.innerWidth.toDouble()
+        canvasHeight = window.innerHeight*1.5
+    }
 
     val canvasHeightOnViewPort = canvasHeight - (canvasHeight/(100+vhOffset))*vhOffset
 
-//    val yScaleFactorRect = 3.5
-//    val xScaleFactorRect = 2.0
-//
-//    val yScaleFactorArc = 3.5
-//    val xScaleFactorArc = 2.0
-
-    var mouseDown = false
     var buttonAlpha = 0.6
     var textAlpha = 0.0
     var particlesAlpha = 1.0
@@ -181,8 +194,6 @@ fun CircularMotionCanvasAnimation(
         canvasHeightOnViewPort/2,
         canvasWidth*0.075,
     )
-//    val specialWidth = 2000.0
-
 
     Canvas2d(
         // canvas buffer dimensions
@@ -204,15 +215,11 @@ fun CircularMotionCanvasAnimation(
         ctx.fillStyle = "rgba(10, 10, 10, $particlesAlpha)"
         ctx.fillRect(0.0, 0.0, canvasWidth, canvasHeight)
 
-        ctx.save { particles.forEach { it.update(this) } }
+        ctx.save { particles.forEach { it.update(canvasWidth, canvasHeightOnViewPort, this) } }
 
         ctx.save {
-            centralButton.draw(
-            "rgba(88, 92, 150, $buttonAlpha)",
-            "rgba(10, 10, 10, ${buttonAlpha-0.5})",
-            "rgba(88, 92, 150, $buttonAlpha)",
-            this
-            )
+            centralButton.update(canvasWidth/2, canvasHeightOnViewPort/2, canvasWidth*0.075, alpha=buttonAlpha, this)
+
             drawText(
                 if(lang=="french") "Bienvenue!" else "Welcome\nto my place!",
                 48,
@@ -222,55 +229,6 @@ fun CircularMotionCanvasAnimation(
                 this
             )
         }
-
-//        ctx.save {
-//            ctx.beginPath()
-//            val grad = ctx.createRadialGradient(
-//                (canvasWidth/2)/xScaleFactorRect, yScaleFactorRect*canvasHeight, 0.0,
-//                (canvasWidth/2)/xScaleFactorRect, yScaleFactorRect*canvasHeight, canvasWidth/2
-//            )
-//            grad.addColorStop(1.0, "rgba(12,12,12, 0.2)")
-//            grad.addColorStop(0.0, backgroundColor)
-//            ctx.fillStyle = grad
-//            ctx.setTransform(xScaleFactorRect, 0.0,0.0,1/yScaleFactorRect, 0.0, 0.0)
-//            ctx.fillRect(0.0, canvasHeightOnViewPort*yScaleFactorRect, canvasWidth, yScaleFactorRect*(canvasHeight-canvasHeightOnViewPort))
-//            ctx.closePath()
-//        }
-
-//        ctx.save {
-//            ctx.beginPath()
-//            val grad = ctx.createRadialGradient(
-//                (specialWidth/2)/xScaleFactorRect, yScaleFactorRect*canvasHeight, 0.0,
-//                (specialWidth/2)/xScaleFactorRect, yScaleFactorRect*canvasHeight, specialWidth*1.5/2
-//            )
-//            grad.addColorStop(1.0, "rgba(12,12,12, 0.2)")
-//            grad.addColorStop(0.0, backgroundColor)
-//
-//            ctx.fillStyle = grad
-//            ctx.setTransform(xScaleFactorRect, 0.0,0.0,1/yScaleFactorRect, 0.0, 0.0)
-//
-//            ctx.setTransform(xScaleFactorRect, 0.0,0.0,1/yScaleFactorRect, 0.0, 0.0)
-//            ctx.fillRect(0.0, canvasHeightOnViewPort*yScaleFactorRect, specialWidth, yScaleFactorRect*(canvasHeight-canvasHeightOnViewPort)*1.5)
-////            ctx.arc(canvasWidth/2/xScaleFactorArc, canvasHeight*yScaleFactorArc, canvasWidth*1.5/yScaleFactorArc, 0.0,2*PI)
-////            ctx.fill()
-//            ctx.closePath()
-//        }
-//
-//        ctx.save {
-//            ctx.beginPath()
-//            val grad = ctx.createLinearGradient(
-//                0.0, canvasHeight*0.8*yScaleFactorArc,
-//                0.0, canvasHeight*yScaleFactorArc
-//            )
-//            grad.addColorStop(0.0, "rgba(12,12,12, 0.2)")
-//            //grad.addColorStop(0.0, "rgba(12,20,30, 0.2)")
-//            grad.addColorStop(1.0, backgroundColor)
-//            ctx.fillStyle = grad
-//            ctx.setTransform(xScaleFactorArc, 0.0,0.0,1/yScaleFactorArc, 0.0, 0.0)
-//            ctx.arc(specialWidth/2/xScaleFactorArc, canvasHeight*yScaleFactorArc, specialWidth*2/yScaleFactorArc, 0.0,2*PI)
-//            ctx.fill()
-//            ctx.closePath()
-//        }
 
         if (mouseDown) {
             if (0.1 <= particlesAlpha ) particlesAlpha -= 0.01

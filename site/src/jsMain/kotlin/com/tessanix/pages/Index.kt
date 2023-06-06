@@ -1,6 +1,6 @@
 package com.tessanix.pages
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import com.tessanix.components.AnimatedParagraphe
 import com.tessanix.components.CircularMotionCanvasAnimation
 import com.tessanix.components.NavBar
@@ -17,6 +17,7 @@ import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
+import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
@@ -24,15 +25,12 @@ import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.style.*
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
-import kotlinx.browser.window
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.JustifyContent
 import org.jetbrains.compose.web.dom.*
-import org.jetbrains.compose.web.svg.LinearGradient
-import org.jetbrains.compose.web.svg.Stop
 
 
 @Page
@@ -42,8 +40,7 @@ fun HomePage() {
     val ctx = rememberPageContext()
     val vhOffset = 50
     val backgroundColor = "rgb(19 34 80)" //"rgb(25 33 90)
-    var canvasWidth by remember{ mutableStateOf(window.innerWidth.toDouble()) }
-    var canvasHeight by remember{ mutableStateOf(window.innerHeight*1.5) }
+
 
     @Composable
     fun DivProjects(){
@@ -70,14 +67,16 @@ fun HomePage() {
 
 
     Column(
-        modifier = Modifier.backgroundColor(Color(backgroundColor)).fillMaxSize(),
+        modifier = Modifier
+            .backgroundColor(Color(backgroundColor))
+            .overflow(Overflow.Hidden)
+            .fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
 
     ){
         Section (
             Modifier
-                //.id("top-page")
                 .width(100.percent)
                 .height((100+vhOffset).vh)
                 .display(DisplayStyle.Flex)
@@ -85,33 +84,7 @@ fun HomePage() {
                 .justifyContent(JustifyContent.Center)
                 .toAttrs()
         ) {
-            when {
-                bp < Breakpoint.SM -> {
-                    canvasWidth = window.innerWidth.toDouble()
-                    canvasHeight = window.innerHeight*1.5
-                    CircularMotionCanvasAnimation(canvasWidth, canvasHeight, vhOffset = vhOffset, backgroundColor = backgroundColor)
-                }
-                bp < Breakpoint.MD -> {
-                    canvasWidth = window.innerWidth.toDouble()
-                    canvasHeight = window.innerHeight*1.5
-                    CircularMotionCanvasAnimation(canvasWidth, canvasHeight, vhOffset = vhOffset, backgroundColor = backgroundColor)
-                }
-                bp < Breakpoint.LG -> {
-                    canvasWidth = window.innerWidth.toDouble()
-                    canvasHeight = window.innerHeight*1.5
-                    CircularMotionCanvasAnimation(canvasWidth, canvasHeight, vhOffset = vhOffset, backgroundColor = backgroundColor)
-                }
-                bp < Breakpoint.XL -> {
-                    canvasWidth = window.innerWidth.toDouble()
-                    canvasHeight = window.innerHeight*1.5
-                    CircularMotionCanvasAnimation(canvasWidth, canvasHeight, vhOffset = vhOffset, backgroundColor = backgroundColor)
-                }
-                else -> {
-                    canvasWidth = window.innerWidth.toDouble()
-                    canvasHeight = window.innerHeight*1.5
-                    CircularMotionCanvasAnimation(canvasWidth, canvasHeight, vhOffset = vhOffset, backgroundColor = backgroundColor)
-                }
-            }
+            CircularMotionCanvasAnimation(bp, vhOffset = vhOffset)
         }
 
         Section(Modifier
@@ -148,13 +121,13 @@ fun HomePage() {
                 if(lang=="french") listOf("- Passioné", "- Curieux", "- Optimiste")
                 else listOf("- Passionate", "- Curious", "- Optimistic")
             )
-
-
         }
 
         Section(Modifier
-            .id("my-profile").position(Position.Relative)
-            .fillMaxWidth().backgroundColor(Color(backgroundColor))
+            .id("my-profile")
+            .position(Position.Relative)
+            .fillMaxWidth()
+            .backgroundColor(Color(backgroundColor))
             .color(Colors.White)
             .textAlign(TextAlign.Center)
             .padding(10.px)
@@ -163,19 +136,21 @@ fun HomePage() {
             Div(
                 Modifier
                     .position(Position.Absolute)
-                    .height(70.percent)
+                    .height(600.px)
                     .width(130.percent)
                     .translateY((-100).percent)
                     .left((-15).percent)
-                    .borderRadius(topLeft = 50.percent, topRight = 50.percent)
-                    .backgroundImage(
-                        linearGradient(dir = LinearGradient.Direction.ToTop) {
-                            add(Color(backgroundColor), stop = 0.percent)
-                            add(rgba(12, 12, 12, 0.2), stop = 80.percent)
-                        }
-                    ).pointerEvents(PointerEvents.None)
+                    .styleModifier {
+                        property(
+                            "background-image",
+                            "linear-gradient(to top, $backgroundColor, rgba(12, 12, 12, 0.1) 50%)," +
+                                    "radial-gradient(ellipse 100% 110% at bottom center, $backgroundColor, rgba(12, 12, 12, 0.1) 70%)"
+                        )
+
+                    }
+                    .pointerEvents(PointerEvents.None)
                     .toAttrs()
-            ) {  }
+            )
             H1(TitleUnderlinedStyle
                 .toModifier()
                 .fontSize(2.em)
@@ -422,7 +397,6 @@ val TitleUnderlinedStyle by ComponentStyle {
     base {
         Modifier.display(DisplayStyle.InlineBlock)
             .position(Position.Relative)
-
     }
     after {
         Modifier.content("")
