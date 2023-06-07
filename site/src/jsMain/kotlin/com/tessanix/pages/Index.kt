@@ -108,18 +108,27 @@ fun HomePage() {
                     .toAttrs()
             ) {
                 if(lang=="french"){
-                    Text("Salut! Moi, Tessan, je suis la solution qu'il te faut!"); Br()
-                    Text("En quelques mots:"); Br()
+                    Text("Je suis un Ingénieur Logiciel prêt à coder!"); Br()
+                    Text("Si tu veux me connaître en quelques mots, je suis:"); Br()
                 }
                 else{
-                    Text("Hi! I, Tessan, am the solution you need!"); Br()
-                    Text("In few words:"); Br()
+                    Text("I am a Software Engineer ready to code!"); Br()
+                    Text("If you want to know me in few words, I am:"); Br()
                 }
             }
             AnimatedParagraphe(
                 Modifier.zIndex(2),
-                if(lang=="french") listOf("- Passioné", "- Curieux", "- Optimiste")
-                else listOf("- Passionate", "- Curious", "- Optimistic")
+                if(lang=="french") setOf(
+                    "- Passioné" to rgb(175,25,25),
+                    "- Curieux" to rgb(211,215,22),
+                    "- Optimiste" to rgb(211,133,11)
+                )
+
+                else setOf(
+                    Pair("- Passionate", rgb(175,25,25)),
+                    Pair("- Curious", rgb(211,215,22)),
+                    Pair("- Optimistic", rgb(211,133,11))
+                )
             )
         }
 
@@ -188,9 +197,12 @@ fun HomePage() {
                             .border(3.px, LineStyle.Solid, Colors.Gray)
                             .borderRadius(10.px)
                     )
-                    Button(
+                    A(
+                        href = "CV_TESSAN_FR.pdf",
                         attrs = Modifier
                             .cursor(Cursor.Pointer)
+                            .textDecorationLine(TextDecorationLine.None)
+                            .border(2.px, LineStyle.Solid, Colors.White)
                             .fontFamily("Arial Black")
                             .borderColor(Colors.White)
                             .borderRadius(35.px)
@@ -198,7 +210,7 @@ fun HomePage() {
                             .padding(10.px)
                             .color(Colors.White)
                             .backgroundColor(Color("rgba(250,250,250,0.3)"))
-                            .toAttrs()
+                            .toAttrs{ attr("download", "") }
                     ) { Text(if (lang == "french") "Télécharger" else "Download") }
                 }
             } else{
@@ -237,9 +249,12 @@ fun HomePage() {
                                 .border(3.px, LineStyle.Solid, Colors.Gray)
                                 .borderRadius(10.px)
                         )
-                        Button(
+                        A(
+                            href = "CV_TESSAN_FR.pdf",
                             attrs = Modifier
                                 .cursor(Cursor.Pointer)
+                                .textDecorationLine(TextDecorationLine.None)
+                                .border(2.px, LineStyle.Solid, Colors.White)
                                 .fontFamily("Arial Black")
                                 .borderColor(Colors.White)
                                 .borderRadius(35.px)
@@ -247,7 +262,7 @@ fun HomePage() {
                                 .padding(10.px)
                                 .color(Colors.White)
                                 .backgroundColor(Color("rgba(250,250,250,0.3)"))
-                                .toAttrs()
+                                .toAttrs{ attr("download", "") }
                         ) { Text(if (lang == "french") "Télécharger" else "Download") }
                     }
                 }

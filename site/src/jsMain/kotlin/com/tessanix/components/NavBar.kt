@@ -37,7 +37,6 @@ fun CustomLi(
             .thenIf(isMouseOver, MenuTitleUnderlinedStyle.toModifier(MenuTitleUnderlinedGrow) )
             .thenIf(!isMouseOver, MenuTitleUnderlinedStyle.toModifier(MenuTitleUnderlinedShrink) )
             .fontFamily("Arial")
-            .cursor(Cursor.Pointer)
             .fontSize(FontSize.XLarge)
             .toAttrs()
     ){

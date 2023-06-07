@@ -15,16 +15,17 @@ import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Label
 import org.jetbrains.compose.web.dom.Text
-import org.jetbrains.compose.web.svg.*
-import org.w3c.dom.svg.SVGElement
+import org.jetbrains.compose.web.svg.Circle
+import org.jetbrains.compose.web.svg.SvgElement
 
 
 @OptIn(ExperimentalComposeWebSvgApi::class)
 @Composable
 fun CircularProgressBar(
     modifier: Modifier,
-    gradientColorStart: String,
-    gradientColorEnd: String,
+//    gradientColorStart: String,
+//    gradientColorEnd: String,
+    progressBarColor: String,
     value: Int = 65,
     textLabel: String,
     width: Int = 160,
@@ -96,22 +97,22 @@ fun CircularProgressBar(
                     .left(0.px)
                     .toAttrs()
             ) {
-                val idText = if(textLabel!="Mobile/Web FrontEnd") textLabel else "MobileWebFrontEnd"
+//                val idText = if(textLabel!="Mobile/Web FrontEnd") textLabel else "MobileWebFrontEnd"
 
-                LinearGradient(id = "GradientColor$idText") {
-                    Stop(attrs = Modifier.toAttrs {
-                        attr("offset", "0%")
-                        attr("stop-color", gradientColorStart)
-                    })
-                    Stop(attrs = Modifier.toAttrs {
-                        attr("offset", "50%")
-                        attr("stop-color", gradientColorStart)
-                    })
-                    Stop(attrs = Modifier.toAttrs {
-                        attr("offset", "100%")
-                        attr("stop-color", gradientColorEnd)
-                    })
-                }
+//                LinearGradient(id = "GradientColor$idText") {
+//                    Stop(attrs = Modifier.toAttrs {
+//                        attr("offset", "0%")
+//                        attr("stop-color", gradientColorStart)
+//                    })
+//                    Stop(attrs = Modifier.toAttrs {
+//                        attr("offset", "50%")
+//                        attr("stop-color", gradientColorStart)
+//                    })
+//                    Stop(attrs = Modifier.toAttrs {
+//                        attr("offset", "100%")
+//                        attr("stop-color", gradientColorEnd)
+//                    })
+//                }
                 Circle(
                     cx = width/2,
                     cy = height/2,
@@ -119,7 +120,7 @@ fun CircularProgressBar(
                     attrs = {
                         attr("stroke-linecap", "round") // make ends of the stroke (outline) of the circle round
                         attr("fill", "none") // make circle transparent
-                        attr("stroke", "url(#GradientColor$idText)") // color the stroke (outline)
+                        attr("stroke", progressBarColor) //"url(#GradientColor$idText)") // color the stroke (outline)
                         attr("stroke-width", "${barThickness}px")
                         attr("pathLength", "100")
                         attr("stroke-dasharray", "100") // defines the pattern of dashes and gaps used in the stroke of the circle.

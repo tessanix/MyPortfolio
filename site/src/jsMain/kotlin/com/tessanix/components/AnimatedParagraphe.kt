@@ -24,14 +24,14 @@ import org.jetbrains.compose.web.dom.H3
 
 
 @Composable
-fun AnimatedParagraphe(modifier: Modifier, words: List<String>) {
+fun AnimatedParagraphe(modifier: Modifier, wordsAndColors: Set<Pair<String, CSSColorValue>>) {
     var currentWord by remember { mutableStateOf(0) }
     //var largestChildWidth by remember { mutableStateOf(0) }
 
     H3(
         modifier
             .fontFamily("Arial Black")
-            .color(rgb(113, 187, 215))
+            //.color(rgb(113, 187, 215))
             .toAttrs()
     ) {
 
@@ -42,15 +42,16 @@ fun AnimatedParagraphe(modifier: Modifier, words: List<String>) {
 //                    (spanChildElement.firstChild as HTMLElement).offsetWidth
 //                }
 //            },
-            modifier = Modifier.width(125.px)//largestChildWidth.px)
+            modifier = Modifier.width(190.px)//largestChildWidth.px)
         ) {
-            words.forEachIndexed { index, word ->
+            wordsAndColors.forEachIndexed { index, (word, color) ->
                 WritingLineAnimatedText(
                     text = word,
                     writingCondition = currentWord == index,
-                    onWritingEnd = { currentWord = (currentWord + 1) % words.size }, // modulo operator is looping from 0 to 2
+                    onWritingEnd = { currentWord = (currentWord + 1) % wordsAndColors.size }, // modulo operator is looping from 0 to 2
                     isWritten = currentWord >= index + 1,
-                    delayAtEnd = if (index == 2) 3000L else 0L
+                    delayAtEnd = if (index == 2) 3000L else 0L,
+                    color = color
                 )
             }
         }
@@ -60,18 +61,19 @@ fun AnimatedParagraphe(modifier: Modifier, words: List<String>) {
 @Composable
 fun WritingLineAnimatedText(
     text: String,
+    color: CSSColorValue,
     writingCondition: Boolean,
     onWritingEnd: () -> Unit,
     isWritten: Boolean,
     delayAtEnd: Long = 0L,
 ) {
-    val maxChildWidth = 125 //by remember{ mutableStateOf(0)}
+    val maxChildWidth = 190 //by remember{ mutableStateOf(0)}
     Box(
 //        ref = ref{
 //            childWidth = (it.firstElementChild as HTMLElement).offsetWidth
 //        },
         modifier = ContainerTextStyle.toModifier()
-            .height(30.px)
+            .height(40.px)
             .width((maxChildWidth+2).px)
             .thenIf(!writingCondition, Modifier.width(if (isWritten) (maxChildWidth+2).px else 0.px))
             .thenIf(
@@ -94,7 +96,7 @@ fun WritingLineAnimatedText(
                 }
             )
     ) {
-        SpanText(text, Modifier.width(Width.MaxContext))
+        SpanText(text, Modifier.fontSize(1.5.em).width(Width.MaxContext).color(color))
     }
 }
 
