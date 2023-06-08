@@ -1,11 +1,9 @@
 package com.tessanix.pages
 
 import androidx.compose.runtime.Composable
-import com.tessanix.components.AnimatedParagraphe
-import com.tessanix.components.CircularMotionCanvasAnimation
-import com.tessanix.components.NavBar
-import com.tessanix.components.SkillsWidget
+import com.tessanix.components.*
 import com.tessanix.lang
+import com.tessanix.mainBackgroundColor
 import com.varabyte.kobweb.compose.css.*
 import com.varabyte.kobweb.compose.css.functions.LinearGradient
 import com.varabyte.kobweb.compose.css.functions.linearGradient
@@ -13,12 +11,9 @@ import com.varabyte.kobweb.compose.css.functions.url
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
-import com.varabyte.kobweb.compose.ui.Alignment
-import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.*
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
-import com.varabyte.kobweb.compose.ui.styleModifier
-import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.graphics.Image
@@ -39,7 +34,6 @@ fun HomePage() {
     val bp = rememberBreakpoint()
     val ctx = rememberPageContext()
     val vhOffset = 50
-    val backgroundColor = "rgb(19 34 80)" //"rgb(25 33 90)
 
 
     @Composable
@@ -58,8 +52,8 @@ fun HomePage() {
             Image(
                 src = "websiteOnLaptop1.svg",
                 modifier = ImageProjectStyle.toModifier()
-                    //.maxHeight(384.px)
-                    .width(100.percent)
+                    .maxHeight(384.px)
+                    .thenIf(bp < Breakpoint.SM, Modifier.width(100.percent))
                     .onClick { ctx.router.navigateTo("kobwebsiteproject") }
             )
         }
@@ -68,7 +62,7 @@ fun HomePage() {
 
     Column(
         modifier = Modifier
-            .backgroundColor(Color(backgroundColor))
+            .backgroundColor(Color(mainBackgroundColor))
             .overflow(Overflow.Hidden)
             .fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween,
@@ -129,12 +123,11 @@ fun HomePage() {
                 )
             )
         }
-
         Section(Modifier
             .id("my-profile")
             .position(Position.Relative)
             .fillMaxWidth()
-            .backgroundColor(Color(backgroundColor))
+            .backgroundColor(Color(mainBackgroundColor))
             .color(Colors.White)
             .textAlign(TextAlign.Center)
             .padding(10.px)
@@ -150,8 +143,8 @@ fun HomePage() {
                     .styleModifier {
                         property(
                             "background-image",
-                            "linear-gradient(to top, $backgroundColor, rgba(12, 12, 12, 0.1) 50%)," +
-                                    "radial-gradient(ellipse 100% 110% at bottom center, $backgroundColor, rgba(12, 12, 12, 0.1) 70%)"
+                            "linear-gradient(to top, $mainBackgroundColor, rgba(12, 12, 12, 0.1) 50%)," +
+                                    "radial-gradient(ellipse 100% 110% at bottom center, $mainBackgroundColor, rgba(12, 12, 12, 0.1) 70%)"
                         )
 
                     }
@@ -179,37 +172,7 @@ fun HomePage() {
 
                     SkillsWidget(bp)
 
-                    H3(
-                        Modifier
-                            .margin(2.em)
-                            .fontSize(1.5.em)
-                            .fontFamily("Arial Black")
-                            .toAttrs()
-                    ) { Text(if (lang == "french") "Mon CV:" else "My Resume:") }
-
-                    Image(
-                        src = "CV_TESSAN_FR-1.png",
-                        modifier = Modifier
-                            .height(400.px)
-                            .width(290.px)
-                            .border(3.px, LineStyle.Solid, Colors.Gray)
-                            .borderRadius(10.px)
-                    )
-                    A(
-                        href = "CV_TESSAN_FR.pdf",
-                        attrs = Modifier
-                            .cursor(Cursor.Pointer)
-                            .textDecorationLine(TextDecorationLine.None)
-                            .border(2.px, LineStyle.Solid, Colors.White)
-                            .fontFamily("Arial Black")
-                            .borderColor(Colors.White)
-                            .borderRadius(35.px)
-                            .margin(topBottom = 20.px)
-                            .padding(10.px)
-                            .color(Colors.White)
-                            .backgroundColor(Color("rgba(250,250,250,0.3)"))
-                            .toAttrs{ attr("download", "") }
-                    ) { Text(if (lang == "french") "Télécharger" else "Download") }
+                    ResumeLayout(true)
                 }
             } else{
                 Row(
@@ -229,40 +192,7 @@ fun HomePage() {
                         SkillsWidget(bp)
                     }
 
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-
-                        H3(
-                            Modifier
-                                .margin(2.em)
-                                .fontSize(1.5.em)
-                                .fontFamily("Arial Black")
-                                .toAttrs()
-                        ) { Text(if (lang == "french") "Mon CV:" else "My Resume:") }
-
-                        Image(
-                            src = "CV_TESSAN_FR-1.png",
-                            modifier = Modifier
-                                .height(400.px)
-                                .width(290.px)
-                                .border(3.px, LineStyle.Solid, Colors.Gray)
-                                .borderRadius(10.px)
-                        )
-                        A(
-                            href = "CV_TESSAN_FR.pdf",
-                            attrs = Modifier
-                                .cursor(Cursor.Pointer)
-                                .textDecorationLine(TextDecorationLine.None)
-                                .border(2.px, LineStyle.Solid, Colors.White)
-                                .fontFamily("Arial Black")
-                                .borderColor(Colors.White)
-                                .borderRadius(35.px)
-                                .margin(topBottom = 20.px)
-                                .padding(10.px)
-                                .color(Colors.White)
-                                .backgroundColor(Color("rgba(250,250,250,0.3)"))
-                                .toAttrs{ attr("download", "") }
-                        ) { Text(if (lang == "french") "Télécharger" else "Download") }
-                    }
+                    ResumeLayout(false)
                 }
             }
         }
@@ -274,7 +204,7 @@ fun HomePage() {
             //.padding(bottom = 150.px)
             .backgroundImage(
                linearGradient(dir = LinearGradient.Direction.ToBottom) {
-                    add(Color(backgroundColor), stop = 0.percent)
+                    add(Color(mainBackgroundColor), stop = 0.percent)
                     add(rgb(0, 0, 0), stop = 100.percent)
                }
             ).display(DisplayStyle.Flex)

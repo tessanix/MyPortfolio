@@ -2,6 +2,7 @@ package com.tessanix.pages
 
 import androidx.compose.runtime.*
 import com.tessanix.lang
+import com.tessanix.mainBackgroundColor
 import com.varabyte.kobweb.compose.css.*
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
@@ -40,7 +41,6 @@ import org.w3c.dom.asList
 fun KaraokeAppProjectPage() {
     val bp = rememberBreakpoint()
     val ctx = rememberPageContext()
-    val backgroundColor = rgb(19, 34, 80)
 
     val videos = document.getElementsByTagName("video").asList()
     var isPlaying by remember { mutableStateOf(false) }
@@ -83,7 +83,7 @@ fun KaraokeAppProjectPage() {
            modifier = Modifier
                 .fillMaxHeight()
                 .fillMaxWidth()
-                .backgroundColor(backgroundColor)
+                .backgroundColor(Color(mainBackgroundColor))
         ) {
             Row(
                 Modifier
@@ -196,7 +196,7 @@ fun KaraokeAppProjectPage() {
                 .display(DisplayStyle.Grid)
                 .gridTemplateRows("1fr ".repeat(12))
                 .gridTemplateColumns("1fr ".repeat(16))
-                .backgroundColor(backgroundColor)
+                .backgroundColor(Color(mainBackgroundColor))
                 .toAttrs()
         ) {
 

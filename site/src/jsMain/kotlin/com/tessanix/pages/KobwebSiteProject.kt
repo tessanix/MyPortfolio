@@ -1,6 +1,7 @@
 package com.tessanix.pages
 
 import androidx.compose.runtime.Composable
+import com.tessanix.mainBackgroundColor
 import com.varabyte.kobweb.compose.css.TextDecorationLine
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -22,7 +23,7 @@ import org.jetbrains.compose.web.dom.*
 fun KobwebSiteProjectPage() {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth().fillMaxHeight().backgroundColor(Color("rgb(19 34 80)"))
+        modifier = Modifier.fillMaxWidth().fillMaxHeight().backgroundColor(Color(mainBackgroundColor))
     ) {
 
         Image(

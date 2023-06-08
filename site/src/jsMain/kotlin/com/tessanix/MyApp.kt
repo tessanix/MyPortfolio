@@ -7,9 +7,7 @@ import androidx.compose.runtime.setValue
 import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.css.ScrollBehavior
 import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.modifiers.minHeight
-import com.varabyte.kobweb.compose.ui.modifiers.overflowY
-import com.varabyte.kobweb.compose.ui.modifiers.scrollBehavior
+import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.core.App
 import com.varabyte.kobweb.silk.SilkApp
 import com.varabyte.kobweb.silk.components.layout.Surface
@@ -19,28 +17,29 @@ import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.init.InitSilk
 import com.varabyte.kobweb.silk.init.InitSilkContext
 import com.varabyte.kobweb.silk.init.registerBaseStyle
-import org.jetbrains.compose.web.css.px
-import org.jetbrains.compose.web.css.vh
+import org.jetbrains.compose.web.css.*
 
 @InitSilk
 fun initSilk(ctx: InitSilkContext) {
-    // Configure silk here
-    ctx.apply {
-        stylesheet.apply {
-            registerBaseStyle("html") {
-                // Always show a vertical scroller, or else our page content shifts when switching from one page that
-                // can scroll to one that can't
-                Modifier
-                    .scrollBehavior(ScrollBehavior.Smooth)
-                    .overflowY(Overflow.Scroll)
-            }
+    // Apply style to elements:
+    ctx.stylesheet.apply {
+
+        registerBaseStyle("html") {
+            Modifier
+                .scrollBehavior(ScrollBehavior.Smooth)
+                .overflowY(Overflow.Scroll)
+        }
+        registerBaseStyle("::-webkit-scrollbar") {
+            Modifier.width(12.px)
+        }
+        registerBaseStyle("::-webkit-scrollbar-thumb") {
+            Modifier.backgroundColor(rgb(20, 20, 20)).borderRadius(100.vw)
+        }
+        registerBaseStyle("::-webkit-scrollbar-track") {
+            Modifier.backgroundColor(rgb(80, 80, 80))//.borderRadius(100.vw)
         }
     }
-}
-
-
-@InitSilk
-fun initializeBreakpoints(ctx: InitSilkContext) {
+    // Initialize breakpoints:
     ctx.theme.breakpoints = BreakpointSizes(
         sm = 650.px,
         md = 850.px,
@@ -49,7 +48,9 @@ fun initializeBreakpoints(ctx: InitSilkContext) {
     )
 }
 
+
 var lang by mutableStateOf("french")
+const val mainBackgroundColor = "rgb(19 34 80)"
 
 @App
 @Composable
