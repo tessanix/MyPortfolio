@@ -58,7 +58,7 @@ fun HomePage() {
             Image(
                 src = "websiteOnLaptop1.svg",
                 modifier = ImageProjectStyle.toModifier()
-                    .maxHeight(300.px)
+                    //.maxHeight(384.px)
                     .width(100.percent)
                     .onClick { ctx.router.navigateTo("kobwebsiteproject") }
             )
@@ -83,9 +83,7 @@ fun HomePage() {
                 .flexDirection(FlexDirection.Column)
                 .justifyContent(JustifyContent.Center)
                 .toAttrs()
-        ) {
-            CircularMotionCanvasAnimation(bp, vhOffset = vhOffset)
-        }
+        ) { CircularMotionCanvasAnimation(bp, vhOffset = vhOffset) }
 
         Section(Modifier
             .fillMaxWidth()
@@ -94,7 +92,8 @@ fun HomePage() {
             .alignItems(AlignItems.Center)
             .padding(10.px)
             .margin(top = (-vhOffset).vh)
-            .textAlign(TextAlign.Center)//.filter(blur(10.px))
+            .height(vhOffset.vh)
+            .textAlign(TextAlign.Center)
             .toAttrs()
         ) {
             NavBar()
@@ -119,15 +118,14 @@ fun HomePage() {
             AnimatedParagraphe(
                 Modifier.zIndex(2),
                 if(lang=="french") setOf(
-                    "- Passioné" to rgb(175,25,25),
-                    "- Curieux" to rgb(211,215,22),
-                    "- Optimiste" to rgb(211,133,11)
+                    "- Passioné" to rgb(25,91,175),
+                    "- Curieux" to rgb(22,151,215),
+                    "- Optimiste" to rgb(12,198,209)
                 )
-
                 else setOf(
-                    Pair("- Passionate", rgb(175,25,25)),
-                    Pair("- Curious", rgb(211,215,22)),
-                    Pair("- Optimistic", rgb(211,133,11))
+                    "- Passionate" to rgb(25,91,175),
+                    "- Curious" to rgb(22,151,215),
+                    "- Optimistic" to rgb(12,198,209)
                 )
             )
         }
