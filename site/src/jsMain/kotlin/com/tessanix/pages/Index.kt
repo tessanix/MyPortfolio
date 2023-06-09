@@ -9,6 +9,7 @@ import com.varabyte.kobweb.compose.css.functions.LinearGradient
 import com.varabyte.kobweb.compose.css.functions.linearGradient
 import com.varabyte.kobweb.compose.css.functions.url
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
+import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.*
@@ -77,7 +78,9 @@ fun HomePage() {
                 .flexDirection(FlexDirection.Column)
                 .justifyContent(JustifyContent.Center)
                 .toAttrs()
-        ) { CircularMotionCanvasAnimation(bp, vhOffset = vhOffset) }
+        ) {
+            CircularMotionCanvasAnimation(bp, vhOffset = vhOffset)
+        }
 
         Section(Modifier
             .fillMaxWidth()

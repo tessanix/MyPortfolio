@@ -2,17 +2,18 @@ package com.tessanix.components
 
 import androidx.compose.runtime.*
 import com.tessanix.lang
+import com.varabyte.kobweb.compose.foundation.layout.Box
+import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.modifiers.height
-import com.varabyte.kobweb.compose.ui.modifiers.onClick
-import com.varabyte.kobweb.compose.ui.modifiers.onMouseMove
-import com.varabyte.kobweb.compose.ui.modifiers.width
+import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.silk.components.graphics.Canvas2d
 import com.varabyte.kobweb.silk.components.graphics.ONE_FRAME_MS_60_FPS
 import com.varabyte.kobweb.silk.components.graphics.RenderScope
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import kotlinx.browser.window
+import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.percent
+import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vh
 import org.w3c.dom.*
 import kotlin.math.PI
@@ -167,6 +168,12 @@ fun CircularMotionCanvasAnimation(
         canvasHeight = window.innerHeight*1.5
     }
 
+//    if(canvasWidth !in window.innerWidth*0.95..window.innerWidth*1.05)
+//        canvasWidth = window.innerWidth.toDouble()
+//
+//    if(canvasHeight !in window.innerHeight*0.95..window.innerHeight*1.05)
+//        canvasHeight = window.innerHeight*1.5
+
     val canvasHeightOnViewPort = canvasHeight - (canvasHeight/(100+vhOffset))*vhOffset
 
     var buttonAlpha = 0.6
@@ -195,49 +202,63 @@ fun CircularMotionCanvasAnimation(
         canvasWidth*0.075,
     )
 
-    Canvas2d(
-        // canvas buffer dimensions
-        width = canvasWidth.toInt(),
-        height = canvasHeight.toInt(),
-        modifier = Modifier
-            .onClick { mouseDown = !mouseDown }
-            .onMouseMove {
-                if(centralButton.isMouseOverEllipse(it.offsetX, it.offsetY, canvasWidth, canvasHeightOnViewPort))
-                    (it.target as HTMLCanvasElement).style.cursor = "pointer"
-                else
-                    (it.target as HTMLCanvasElement).style.cursor = "default"
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.position(Position.Relative)
+    ) {
+
+        Canvas2d(
+            // canvas buffer dimensions
+            width = canvasWidth.toInt(),
+            height = canvasHeight.toInt(),
+            modifier = Modifier
+                .onClick { mouseDown = !mouseDown }
+                .onMouseMove {
+                    if (centralButton.isMouseOverEllipse(it.offsetX, it.offsetY, canvasWidth, canvasHeightOnViewPort))
+                        (it.target as HTMLCanvasElement).style.cursor = "pointer"
+                    else
+                        (it.target as HTMLCanvasElement).style.cursor = "default"
+                }
+                .width(100.percent)
+                .height((100 + vhOffset).vh),
+            minDeltaMs = ONE_FRAME_MS_60_FPS,
+        ) {
+
+            ctx.fillStyle = "rgba(10, 10, 10, $particlesAlpha)"
+            ctx.fillRect(0.0, 0.0, canvasWidth, canvasHeight)
+
+            ctx.save { particles.forEach { it.update(canvasWidth, canvasHeightOnViewPort, this) } }
+
+            ctx.save {
+                centralButton.update(
+                    canvasWidth / 2,
+                    canvasHeightOnViewPort / 2,
+                    canvasWidth * 0.075,
+                    alpha = buttonAlpha,
+                    this
+                )
+
+                drawText(
+                    if (lang == "french") "Bienvenue!" else "Welcome\nto my place!",
+                    48,
+                    "rgba(255, 255, 255, $textAlpha)",
+                    canvasWidth,
+                    canvasHeight,
+                    this
+                )
             }
-            .width(100.percent)
-            .height((100+vhOffset).vh),
-        minDeltaMs = ONE_FRAME_MS_60_FPS,
-    ){
 
-        ctx.fillStyle = "rgba(10, 10, 10, $particlesAlpha)"
-        ctx.fillRect(0.0, 0.0, canvasWidth, canvasHeight)
-
-        ctx.save { particles.forEach { it.update(canvasWidth, canvasHeightOnViewPort, this) } }
-
-        ctx.save {
-            centralButton.update(canvasWidth/2, canvasHeightOnViewPort/2, canvasWidth*0.075, alpha=buttonAlpha, this)
-
-            drawText(
-                if(lang=="french") "Bienvenue!" else "Welcome\nto my place!",
-                48,
-                "rgba(255, 255, 255, $textAlpha)",
-                canvasWidth,
-                canvasHeight,
-                this
-            )
+            if (mouseDown) {
+                if (0.1 <= particlesAlpha) particlesAlpha -= 0.01
+                if (0 < buttonAlpha) buttonAlpha -= 0.01
+                if (textAlpha < 1) textAlpha += 0.005
+            } else {
+                if (particlesAlpha < 1) particlesAlpha += 0.01
+                if (buttonAlpha < 0.6) buttonAlpha += 0.01
+                if (0 < textAlpha) textAlpha -= 0.01
+            }
         }
 
-        if (mouseDown) {
-            if (0.1 <= particlesAlpha ) particlesAlpha -= 0.01
-            if (0 < buttonAlpha) buttonAlpha -= 0.01
-            if (textAlpha < 1) textAlpha += 0.005
-        } else {
-            if (particlesAlpha < 1) particlesAlpha += 0.01
-            if (buttonAlpha < 0.6) buttonAlpha += 0.01
-            if (0 < textAlpha) textAlpha -= 0.01
-        }
+        ScrollDownAnimation(Modifier.translateY(50.px), mouseDown)
     }
 }

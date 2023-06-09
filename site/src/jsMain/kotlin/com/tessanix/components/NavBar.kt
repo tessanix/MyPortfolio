@@ -185,6 +185,7 @@ val MenuTitleUnderlinedShrink by MenuTitleUnderlinedStyle.addVariant {
 
 val HamburgerStyle by ComponentStyle {
     base { Modifier
+        .zIndex(5)
         .cursor(Cursor.Pointer)
         .margin(leftRight = 10.px)
         .display(DisplayStyle.Block)

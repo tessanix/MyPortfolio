@@ -8,6 +8,7 @@ import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.css.ScrollBehavior
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.*
+import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.core.App
 import com.varabyte.kobweb.silk.SilkApp
 import com.varabyte.kobweb.silk.components.layout.Surface
@@ -17,17 +18,26 @@ import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.init.InitSilk
 import com.varabyte.kobweb.silk.init.InitSilkContext
 import com.varabyte.kobweb.silk.init.registerBaseStyle
-import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.css.px
+import org.jetbrains.compose.web.css.rgb
+import org.jetbrains.compose.web.css.vh
+import org.jetbrains.compose.web.css.vw
 
 @InitSilk
 fun initSilk(ctx: InitSilkContext) {
     // Apply style to elements:
+
     ctx.stylesheet.apply {
 
         registerBaseStyle("html") {
             Modifier
                 .scrollBehavior(ScrollBehavior.Smooth)
                 .overflowY(Overflow.Scroll)
+        }
+        registerBaseStyle("body"){
+            Modifier.styleModifier {
+                property("color-scheme", "light only")
+            }
         }
         registerBaseStyle("::-webkit-scrollbar") {
             Modifier.width(12.px)
