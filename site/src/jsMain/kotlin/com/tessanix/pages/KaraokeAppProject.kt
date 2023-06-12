@@ -1,9 +1,12 @@
 package com.tessanix.pages
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import com.tessanix.components.ProjectPageBar
 import com.tessanix.lang
 import com.tessanix.mainBackgroundColor
-import com.varabyte.kobweb.compose.css.*
+import com.varabyte.kobweb.compose.css.FontWeight
+import com.varabyte.kobweb.compose.css.ObjectFit
+import com.varabyte.kobweb.compose.css.TextDecorationLine
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -11,30 +14,18 @@ import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
-import com.varabyte.kobweb.compose.ui.modifiers.alignItems
-import com.varabyte.kobweb.compose.ui.modifiers.color
-import com.varabyte.kobweb.compose.ui.modifiers.fontSize
-import com.varabyte.kobweb.compose.ui.modifiers.height
-import com.varabyte.kobweb.compose.ui.modifiers.width
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.graphics.Image
-import com.varabyte.kobweb.silk.components.icons.fa.FaArrowLeft
 import com.varabyte.kobweb.silk.components.icons.fa.FaGithub
-import com.varabyte.kobweb.silk.components.icons.fa.IconSize
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
-import kotlinx.browser.document
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.css.AlignItems
-import org.jetbrains.compose.web.css.JustifyContent
 import org.jetbrains.compose.web.dom.*
 import org.w3c.dom.HTMLElement
-import org.w3c.dom.HTMLVideoElement
-import org.w3c.dom.asList
 
 @Page
 @Composable
@@ -42,14 +33,10 @@ fun KaraokeAppProjectPage() {
     val bp = rememberBreakpoint()
     val ctx = rememberPageContext()
 
-    val videos = document.getElementsByTagName("video").asList()
-    var isPlaying by remember { mutableStateOf(false) }
-
     val titleList = if(lang=="french")
             listOf("Le produit: ", "Outils utilisés: ", "Disponibilité: ", "Partage du code: ")
     else
         listOf("The product: ", "Used tools: ", "Availability: ", "Code sharing: ")
-
 
     val descListServer = if(lang=="french") listOf(
         "Serveur dédié à l'administrateur déployé sur le web.",
@@ -77,209 +64,92 @@ fun KaraokeAppProjectPage() {
         "Source code available on GitHub."
     )
 
-    if(bp < Breakpoint.XL) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-           modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth()
-                .backgroundColor(Color(mainBackgroundColor))
-        ) {
-            Row(
-                Modifier
-                .fillMaxWidth()
-                .position(Position.Relative),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                FaArrowLeft(
-                    Modifier
-                        .position(Position.Absolute)
-                        .top(0.px)
-                        .left(0.px)
-                        .cursor(Cursor.Pointer)
-                        .display(DisplayStyle.Flex)
-                        .justifyContent(JustifyContent.Center)
-                        .alignItems(AlignItems.Center)
-                        .fontSize(2.em)
-                        .width(80.px)
-                        .height(80.px)
-                        .color(Colors.White)
-                        .onClick { ctx.router.navigateTo("/") },
-                    size = IconSize.LG
-                )
-                H1(
-                    Modifier
-                        .textAlign(TextAlign.Center)
-                        .color(Colors.White)
-                        .margin(20.px)
-                        .fontFamily("Arial")
-                        .toAttrs()
-                ) { Text("Karaoke App") }
-            }
-
-                if(bp < Breakpoint.MD){
-                    KaraokeAppCard(
-                        modifier = Modifier
-                            .gridArea("3", "1", "13", "4")
-                            .margin(20.px),
-                        srcImage1 = "smartphoneIcon.svg",
-                        srcImage2 =  "androidNoCircleIcon.svg",
-                        cardTitle = if(lang=="french") "Côté client:" else "Client side:",
-                        titleList = titleList,
-                        descList = descListClient,
-                        gitHubLink = "https://github.com/tessanix/KaraokeApp"
-                    )
-                    KaraokeAppCard(
-                        modifier = Modifier
-                            .gridArea("1", "14", "10", "17")
-                            .margin(20.px),
-                        srcImage1 = "serverIcon.svg",
-                        srcImage2 =  "KtorLogoIcon.svg",
-                        cardTitle = if(lang=="french") "Côté serveur:" else "Server side:",
-                        titleList = titleList,
-                        descList = descListServer,
-                        gitHubLink = "https://github.com/tessanix/KaraokeAppBackend"
-                    )
-                }else {
-                    Row(horizontalArrangement = Arrangement.SpaceAround){
-                        KaraokeAppCard(
-                            modifier = Modifier.margin(leftRight =  20.px).fillMaxHeight().width(50.percent),
-                            srcImage1 = "smartphoneIcon.svg",
-                            srcImage2 =  "androidNoCircleIcon.svg",
-                            cardTitle = if(lang=="french") "Côté client:" else "Client side:",
-                            titleList = titleList,
-                            descList = descListClient,
-                            gitHubLink = "https://github.com/tessanix/KaraokeApp"
-                        )
-                        KaraokeAppCard(
-                            modifier = Modifier.margin(leftRight = 20.px).fillMaxHeight().width(50.percent),
-                            srcImage1 = "serverIcon.svg",
-                            srcImage2 =  "KtorLogoIcon.svg",
-                            cardTitle = if(lang=="french") "Côté serveur:" else "Server side:",
-                            titleList = titleList,
-                            descList = descListServer,
-                            gitHubLink = "https://github.com/tessanix/KaraokeAppBackend"
-                        )
-                    }
-                }
-
-            Button(
-                Modifier
-                    .padding(10.px)
-                    .borderRadius(35.px)
-                    .margin(30.px)
-                    .onClick {
-                        isPlaying = !isPlaying
-                        if (isPlaying) videos.forEach { video -> (video as HTMLVideoElement).play() }
-                        else videos.forEach { video -> (video as HTMLVideoElement).pause() }
-                    }
-                    .toAttrs()
-            ) { Text(if (isPlaying) "Pause both videos" else "Play both videos") }
-
-            if(bp < Breakpoint.LG){
-                SmartphoneVideo(Modifier.margin(20.px))
-                DesktopVideo(Modifier.margin(20.px))
-            }else {
-                Row(horizontalArrangement = Arrangement.SpaceAround) {
-                    SmartphoneVideo(Modifier.margin(20.px).width(30.percent))
-                    DesktopVideo(Modifier.margin(20.px).width(70.percent))
-                }
-            }
-
-        }
+    @Composable
+    fun ServerAndClientCards(modifier: Modifier){
+        PresentationCard(
+            modifier = modifier,
+            srcImage1 = "serverIcon.svg",
+            srcImage2 =  "KtorLogoIcon.svg",
+            cardTitle = if(lang=="french") "Côté serveur:" else "Server side:",
+            titleList = titleList,
+            descList = descListServer,
+            gitHubLink = "https://github.com/tessanix/KaraokeAppBackend"
+        )
+        PresentationCard(
+            modifier = modifier,
+            srcImage1 = "smartphoneIcon.svg",
+            srcImage2 =  "androidNoCircleIcon.svg",
+            cardTitle = if(lang=="french") "Côté client:" else "Client side:",
+            titleList = titleList,
+            descList = descListClient,
+            gitHubLink = "https://github.com/tessanix/KaraokeApp"
+        )
     }
-    else {
-        Div(
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth()
+            .backgroundColor(Color(mainBackgroundColor))
+    ) {
+
+        ProjectPageBar(ctx, if(lang=="french") "Application Karaoke" else "Karaoke App")
+
+        Column(
             Modifier
-                .height(100.vh)
-                .fillMaxWidth()
-                .display(DisplayStyle.Grid)
-                .gridTemplateRows("1fr ".repeat(12))
-                .gridTemplateColumns("1fr ".repeat(16))
-                .backgroundColor(Color(mainBackgroundColor))
-                .toAttrs()
+                .margin(10.px, 30.px)
+                .color(Colors.White)
+                .fontFamily("Arial")
         ) {
-
-            FaArrowLeft(
-                Modifier
-                    .cursor(Cursor.Pointer)
-                    .display(DisplayStyle.Flex)
-                    .justifyContent(JustifyContent.Center)
-                    .alignItems(AlignItems.Center)
-                    .fontSize(2.em)
-                    .gridArea("1", "1", "1", "2")
-                    .width(80.px)
-                    .height(80.px)
-                    .color(Colors.White)
-                    .onClick { ctx.router.navigateTo("/") },
-                size = IconSize.LG
-            )
-            H1(
-                Modifier
-                    .textAlign(TextAlign.Center)
-                    .gridArea("1", "7", "1", "11")
-                    .color(Colors.White)
-                    .margin(20.px)
-                    .fontFamily("Arial")
-                    .toAttrs()
-            ) { Text("Karaoke App") }
-
-            KaraokeAppCard(
-                modifier = Modifier
-                    .gridArea("3", "1", "13", "4")
-                    .margin(0.px, 20.px, 20.px, 20.px),
-                srcImage1 = "smartphoneIcon.svg",
-                srcImage2 = "androidNoCircleIcon.svg",
-                cardTitle = if(lang=="french") "Côté client:" else "Client side:",
-                titleList = titleList,
-                descList = descListClient,
-                gitHubLink = "https://github.com/tessanix/KaraokeApp"
-            )
-            KaraokeAppCard(
-                modifier = Modifier
-                    .gridArea("1", "14", "10", "17")
-                    .margin(20.px, 20.px, 0.px, 20.px),
-                srcImage1 = "serverIcon.svg",
-                srcImage2 = "KtorLogoIcon.svg",
-                cardTitle = if(lang=="french") "Côté serveur:" else "Server side:",
-                titleList = titleList,
-                descList = descListServer,
-                gitHubLink = "https://github.com/tessanix/KaraokeAppBackend"
-
-            )
-
-            SmartphoneVideo(
-                Modifier
-                    .gridArea("2", "4", "11", "7")
-                    .margin(20.px, 10.px, 20.px, 20.px)
-            )
-
-            DesktopVideo(
-                Modifier
-                    .gridArea("2", "7", "11", "14")
-                    .margin(20.px, 20.px, 20.px, 10.px)
-            )
-
-            Button(
-                Modifier
-                    .gridArea("11", "6", "12", "8")
-                    .padding(10.px)
-                    .borderRadius(35.px)
-                    .margin(30.px)
-                    .onClick {
-                        isPlaying = !isPlaying
-                        if (isPlaying) videos.forEach { video -> (video as HTMLVideoElement).play() }
-                        else videos.forEach { video -> (video as HTMLVideoElement).pause() }
-                    }
-                    .toAttrs()
-            ) { Text(if (isPlaying) "Pause both videos" else "Play both videos") }
+            if(lang=="french") {
+                H1 { Text("Contexte:"); Br() }
+                H3 {
+                    Text("Afin d'aider un animateur Karaoké à moderniser son buiseness j'ai créer "); Br()
+                    Text("un serveur web et une application mobile Android."); Br()
+                    Text("L'animateur peut accéder au serveur via une page web de connexion."); Br()
+                    Text("Le serveur web contient une base de données avec les titres des musiques que l'animateur propose mais aussi la liste des demandes faites par les clients"); Br()
+                    Text("Il peut ensuite modifier et ajouter des titres de musique et supprimer les demandes déjà traités"); Br()
+                    Text("L'application mobile est principalement dédiée aux clients venue pour l'animation Karaoké."); Br()
+                    Text("Avec elle, les clients peuvent avoir les coordonées de contact de l'animateur, ils peuvent choisir un titre dans la base de données ");Br()
+                    Text("et faire une demande qui sera envoyé au serveur dans la liste des demandes.")
+                }
+            }else {
+                H1 { Text("Context:"); Br() }
+                H3 {
+                    Text("In order to help a Karaoke host modernize their business, I created "); Br()
+                    Text("a web server and an Android mobile application."); Br()
+                    Text("The host can access the server through a login web page."); Br()
+                    Text("The web server contains a database with the titles of the songs offered by the host, as well as the list of requests made by the clients."); Br()
+                    Text("He can then modify and add music titles, and delete the requests that have already been processed."); Br()
+                    Text("The mobile application is primarily dedicated to the clients who come for the Karaoke entertainment."); Br()
+                    Text("With it, clients can have the contact information of the host, they can choose a title from the database ");Br()
+                    Text("and make a request that will be sent to the server in the list of requests.")
+                }
+            }
         }
+
+        if(bp < Breakpoint.MD)
+            ServerAndClientCards(Modifier.margin(20.px))
+        else {
+            Row(horizontalArrangement = Arrangement.SpaceAround) {
+                ServerAndClientCards(
+                    Modifier
+                        .margin(leftRight = 20.px)
+                        .fillMaxHeight()
+                        .width(50.percent)
+                )
+            }
+        }
+        KaraokeVideo(Modifier.margin(20.px))
     }
 }
 
 
+
+
 @Composable
-fun KaraokeAppCard(
+fun PresentationCard(
     modifier: Modifier,
     srcImage1: String,
     srcImage2: String,
@@ -291,7 +161,7 @@ fun KaraokeAppCard(
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = modifier
-            .fontSize(2.em)
+            .fontSize(1.5.em)
             .padding(1.em)
             .borderRadius(35.px)
             .backgroundColor(rgba(255,255,255,0.2))
@@ -302,8 +172,8 @@ fun KaraokeAppCard(
             horizontalArrangement = Arrangement.SpaceAround,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Image(src = srcImage1, modifier = Modifier.width(40.percent))
-            Image(src = srcImage2, modifier = Modifier.width(40.percent))
+            Image(src = srcImage1, modifier = Modifier.width(30.percent))
+            Image(src = srcImage2, modifier = Modifier.width(30.percent))
         }
         H3 { Text(cardTitle) }
         Ul {
@@ -341,30 +211,9 @@ fun KaraokeAppCard(
     }
 }
 
-@Composable
-fun SmartphoneVideo(modifier: Modifier){
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        Video(
-            Modifier
-                .width(100.percent).height(100.percent)
-                .objectFit(ObjectFit.Fill)
-                .onMouseEnter { (it.target as HTMLElement).setAttribute("controls", "") }
-                .onMouseLeave { (it.target as HTMLElement).removeAttribute("controls") }
-                .toAttrs()
-        ) {
-            Source(attrs = {
-                attr("src", "karaokeappvideos-smartphone2.mp4")
-                attr("type", "video/mp4")
-            })
-        }
-    }
-}
 
 @Composable
-fun DesktopVideo(modifier: Modifier){
+fun KaraokeVideo(modifier: Modifier){
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -378,7 +227,7 @@ fun DesktopVideo(modifier: Modifier){
                 .toAttrs()
         ) {
             Source(attrs = {
-                attr("src", "KaraokeAppVideo_desktop.mp4")
+                attr("src", "karaokeAppPresentation.mp4")
                 attr("type", "video/mp4")
             })
         }

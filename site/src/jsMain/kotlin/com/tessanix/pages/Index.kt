@@ -9,7 +9,6 @@ import com.varabyte.kobweb.compose.css.functions.LinearGradient
 import com.varabyte.kobweb.compose.css.functions.linearGradient
 import com.varabyte.kobweb.compose.css.functions.url
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
-import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.*
@@ -47,8 +46,7 @@ fun HomePage() {
                     .onClick { ctx.router.navigateTo("karaokeappproject") }
             )
         }
-        Div ( attrs = ImageContainerProjectStyle.toModifier()
-                .padding(10.percent).toAttrs()
+        Div ( attrs = ImageContainerProjectStyle.toAttrs()
         ) {
             Image(
                 src = "websiteOnLaptop1.svg",
@@ -56,6 +54,19 @@ fun HomePage() {
                     .maxHeight(384.px)
                     .thenIf(bp < Breakpoint.SM, Modifier.width(100.percent))
                     .onClick { ctx.router.navigateTo("kobwebsiteproject") }
+            )
+        }
+        Div ( attrs = ImageContainerProjectStyle.toModifier()
+            //.backgroundColor(rgb(65, 104, 109))
+            //.borderRadius(50.percent)
+            .toAttrs()
+        ) {
+            Image(
+                src = "Dizalty_Vpn_logo_large.png",
+                modifier = ImageProjectStyle.toModifier()
+                    .maxHeight(384.px)
+                    .thenIf(bp < Breakpoint.SM, Modifier.width(100.percent))
+                    .onClick { ctx.router.navigateTo("qtvpnproject") }
             )
         }
     }
@@ -79,7 +90,7 @@ fun HomePage() {
                 .justifyContent(JustifyContent.Center)
                 .toAttrs()
         ) {
-            CircularMotionCanvasAnimation(bp, vhOffset = vhOffset)
+            CircularMotionCanvasAnimation(vhOffset = vhOffset)
         }
 
         Section(Modifier
@@ -201,6 +212,43 @@ fun HomePage() {
         }
 
         Section(Modifier
+            .id("my-experiences")
+            .fillMaxWidth()
+            .backgroundColor(Color(mainBackgroundColor))
+            .display(DisplayStyle.Flex)
+            .flexDirection(FlexDirection.Column)
+            .alignItems(AlignItems.Center)
+            .color(Colors.White)
+            .toAttrs()
+        ) {
+            H1(TitleUnderlinedStyle
+                .toModifier()
+                .fontSize(2.em)
+                .margin(50.px, 0.px)
+                .fontFamily("Arial")
+                .toAttrs()
+            ){ Text(if(lang=="french") "Mes expériences" else "My experiences") }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier= Modifier.fillMaxWidth().flexWrap(FlexWrap.Wrap)
+            ) {
+                Ul(Modifier
+                    //.listStyle("none")
+                    .fontFamily("Arial")
+                    .toAttrs()) {
+                   if(lang == "french") {
+                       Li { H1 { Text("Développeur chez Dizalty") } }
+                       Li { H1 { Text("Ingénieur logiciel chez SII. Projet chez le client MBDA") } }
+                   }else {
+                       Li { H1 { Text("Developer at Dizalty") } }
+                       Li { H1 { Text("Software Engineer at SII. Project at client MBDA") } }
+                   }
+                }
+            }
+        }
+
+        Section(Modifier
             .id("my-work")
             .fillMaxWidth()
             //.minWidth(900.px)
@@ -223,19 +271,26 @@ fun HomePage() {
                 .fontFamily("Arial")
                 .toAttrs()
             ){ Text(if(lang=="french") "Mes travaux" else "My work") }
-            if(bp < Breakpoint.LG){
-                Column(
-                    Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.SpaceAround,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) { DivProjects() }
-            }else {
-                Row(
-                    Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically
-                ) { DivProjects() }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier= Modifier.fillMaxWidth().flexWrap(FlexWrap.Wrap)
+            ) {
+                DivProjects()
             }
+//            if(bp < Breakpoint.LG){
+//                Column(
+//                    Modifier.fillMaxWidth(),
+//                    verticalArrangement = Arrangement.SpaceAround,
+//                    horizontalAlignment = Alignment.CenterHorizontally
+//                ) { DivProjects() }
+//            }else {
+//                Row(
+//                    Modifier.fillMaxWidth(),
+//                    horizontalArrangement = Arrangement.SpaceAround,
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) { DivProjects() }
+//            }
         }
 
         Footer(Modifier
@@ -324,7 +379,6 @@ val ImageContainerProjectStyle by ComponentStyle{
         .display(DisplayStyle.Flex)
         .justifyContent(JustifyContent.Center)
         .margin(10.px)
-        .width(100.percent)
     }
 }
 

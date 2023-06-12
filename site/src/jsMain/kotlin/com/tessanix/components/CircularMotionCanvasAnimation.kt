@@ -9,7 +9,6 @@ import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.silk.components.graphics.Canvas2d
 import com.varabyte.kobweb.silk.components.graphics.ONE_FRAME_MS_60_FPS
 import com.varabyte.kobweb.silk.components.graphics.RenderScope
-import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import kotlinx.browser.window
 import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.percent
@@ -154,7 +153,6 @@ class CentralButton(
 
 @Composable
 fun CircularMotionCanvasAnimation(
-    bp: Breakpoint,
     nParticles: Int = 1000,
     vhOffset: Int = 50,
 ) {
@@ -163,16 +161,13 @@ fun CircularMotionCanvasAnimation(
     var canvasHeight by remember{ mutableStateOf(window.innerHeight*1.5) }
     var mouseDown by remember{ mutableStateOf(false) }
 
-    if(bp < Breakpoint.SM || bp < Breakpoint.MD || bp < Breakpoint.LG || bp < Breakpoint.XL || Breakpoint.XL <= bp){
-        canvasWidth = window.innerWidth.toDouble()
-        canvasHeight = window.innerHeight*1.5
-    }
+    window.addEventListener("resize", {
+        if(canvasWidth !in window.innerWidth*0.95..window.innerWidth*1.05)
+            canvasWidth = window.innerWidth.toDouble()
 
-//    if(canvasWidth !in window.innerWidth*0.95..window.innerWidth*1.05)
-//        canvasWidth = window.innerWidth.toDouble()
-//
-//    if(canvasHeight !in window.innerHeight*0.95..window.innerHeight*1.05)
-//        canvasHeight = window.innerHeight*1.5
+        if(canvasHeight !in window.innerHeight*0.95..window.innerHeight*1.05)
+            canvasHeight = window.innerHeight*1.5
+    })
 
     val canvasHeightOnViewPort = canvasHeight - (canvasHeight/(100+vhOffset))*vhOffset
 

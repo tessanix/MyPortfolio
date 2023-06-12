@@ -81,6 +81,7 @@ fun MyNav( addX:Boolean=false, modifier:Modifier, onCloseNav:(()->Unit)?=null ) 
 
             //CustomLi(if(lang=="french") "Haut de page" else "Page top", "#top-page")
             CustomLi(if(lang=="french") "Mon profil" else "My profile", "#my-profile")
+            CustomLi(if(lang=="french") "Mes expériences" else "My experiences", "#my-experiences")
             CustomLi(if(lang=="french") "Mes travaux" else "My work", "#my-work")
             CustomLi("Contact", "#contact")
 
