@@ -141,7 +141,7 @@ fun KaraokeAppProjectPage() {
                 )
             }
         }
-        KaraokeVideo(Modifier.margin(20.px))
+        KaraokeVideo(Modifier.fillMaxWidth().margin(20.px))
     }
 }
 

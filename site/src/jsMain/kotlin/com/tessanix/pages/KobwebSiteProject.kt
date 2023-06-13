@@ -6,6 +6,7 @@ import com.tessanix.lang
 import com.tessanix.mainBackgroundColor
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.TextDecorationLine
+import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -30,7 +31,8 @@ fun KobwebSiteProjectPage() {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth().backgroundColor(Color(mainBackgroundColor))
+        verticalArrangement = Arrangement.SpaceAround,
+        modifier = Modifier.fillMaxWidth().fillMaxHeight().backgroundColor(Color(mainBackgroundColor))
     ) {
         ProjectPageBar(ctx, if(lang=="french") "Site web portfolio" else "Portfolio website")
 

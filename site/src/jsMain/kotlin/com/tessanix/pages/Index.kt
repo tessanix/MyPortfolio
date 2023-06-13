@@ -17,11 +17,12 @@ import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.graphics.Image
+import com.varabyte.kobweb.silk.components.icons.fa.FaEnvelope
+import com.varabyte.kobweb.silk.components.icons.fa.FaLinkedin
+import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.style.*
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
-import org.jetbrains.compose.web.attributes.InputType
-import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.JustifyContent
@@ -239,10 +240,10 @@ fun HomePage() {
                     .toAttrs()) {
                    if(lang == "french") {
                        Li { H1 { Text("Développeur chez Dizalty") } }
-                       Li { H1 { Text("Ingénieur logiciel chez SII. Projet chez le client MBDA") } }
+                       Li { H1 { Text("Ingénieur logiciel chez SII dans le pôle défense") } }
                    }else {
                        Li { H1 { Text("Developer at Dizalty") } }
-                       Li { H1 { Text("Software Engineer at SII. Project at client MBDA") } }
+                       Li { H1 { Text("Software Engineer at SII in the defense division") } }
                    }
                 }
             }
@@ -278,19 +279,6 @@ fun HomePage() {
             ) {
                 DivProjects()
             }
-//            if(bp < Breakpoint.LG){
-//                Column(
-//                    Modifier.fillMaxWidth(),
-//                    verticalArrangement = Arrangement.SpaceAround,
-//                    horizontalAlignment = Alignment.CenterHorizontally
-//                ) { DivProjects() }
-//            }else {
-//                Row(
-//                    Modifier.fillMaxWidth(),
-//                    horizontalArrangement = Arrangement.SpaceAround,
-//                    verticalAlignment = Alignment.CenterVertically
-//                ) { DivProjects() }
-//            }
         }
 
         Footer(Modifier
@@ -299,6 +287,7 @@ fun HomePage() {
             .minHeight(600.px)
             .display(DisplayStyle.Flex)
             .flexDirection(FlexDirection.Column)
+            .justifyContent(JustifyContent.SpaceEvenly)
             .alignItems(AlignItems.Center)
             .backgroundImage(url("horizonPlanet_1.jpg"))
             .backgroundRepeat(BackgroundRepeat.NoRepeat)
@@ -316,63 +305,74 @@ fun HomePage() {
                 .display(DisplayStyle.InlineBlock)
                 .color(Colors.White)
                 .fontFamily("Arial")
+                .textShadow((-5).px, 5.px, 5.px, rgb(15,15,15))
                 .toAttrs()
             ){ Text( if(lang=="french") "Merci de votre visite!" else "Thank you for your visit!") }
 
-            Column(
-                verticalArrangement = Arrangement.SpaceAround,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxHeight().fillMaxWidth()
+            Row(
+                horizontalArrangement = Arrangement.SpaceAround,
+                modifier = Modifier
+                    .minWidth(170.px)
+                    .backgroundColor(rgba(35,35,35,0.6))
+                    .borderRadius(35.px)
             ) {
 
-                Input(
-                    type = InputType.Email,
-                    attrs = InputStyle.toAttrs {
-                        placeholder("Email")
-                        onInput { event -> println(event.value) }
-                    }
-                )
+                Link(
+                    path = "mailto:tessan.mln@gmail.com",
+                    modifier = Modifier
+                        .textDecorationLine(TextDecorationLine.None)
+                        .width(80.px)
+                        .height(80.px)
+                ){
+                    FaEnvelope(
+                        Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                            .display(DisplayStyle.Flex)
+                            .justifyContent(JustifyContent.Center)
+                            .alignItems(AlignItems.Center)
+                            .fontSize(2.em)
+                            .color(Colors.White))
+                }
 
-                TextArea(
-                    attrs = InputStyle
-                        .toModifier()
-                        .minHeight(200.px)
-                        .toAttrs {
-                            placeholder(if(lang=="french") "Ecris ton message..." else "Write your message...")
-                        }
-                )
-
-                Button(
-                    attrs = Modifier
-                        .cursor(Cursor.Pointer)
-                        .padding(10.px)
-                        .fontFamily("Arial Black")
-                        .color(Colors.White)
-                        .backgroundColor(Color("rgba(250,250,250,0.3)"))
-                        .borderColor(Colors.White)
-                        .borderRadius(35.px)
-                        .toAttrs()
-                ) { Text(if(lang=="french") "Envoyer" else "Send") }
+                Link(
+                    path = "https://www.linkedin.com/in/tessan-molini%C3%A9/",
+                    modifier = Modifier
+                        .textDecorationLine(TextDecorationLine.None)
+                        .width(80.px)
+                        .height(80.px)
+                ){
+                    FaLinkedin(
+                        Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                            .display(DisplayStyle.Flex)
+                            .justifyContent(JustifyContent.Center)
+                            .alignItems(AlignItems.Center)
+                            .fontSize(2.em)
+                            .color(Colors.White)
+                    )
+                }
             }
         }
     }
 }
 
 
-val InputStyle by ComponentStyle{
-    base { Modifier
-        .fontWeight(FontWeight.Bold)
-        .backgroundColor(Color("rgba(250,250,250,0.3)"))
-        .padding(1.em)
-        .minWidth(300.px)
-        .width(30.percent)
-        .borderRadius(35.px)
-        .borderColor(Colors.Black)
-    }
-    cssRule("::placeholder"){
-        Modifier.color(Colors.Black)
-    }
-}
+//val InputStyle by ComponentStyle{
+//    base { Modifier
+//        .fontWeight(FontWeight.Bold)
+//        .backgroundColor(Color("rgba(250,250,250,0.3)"))
+//        .padding(1.em)
+//        .minWidth(300.px)
+//        .width(30.percent)
+//        .borderRadius(35.px)
+//        .borderColor(Colors.Black)
+//    }
+//    cssRule("::placeholder"){
+//        Modifier.color(Colors.Black)
+//    }
+//}
 
 val ImageContainerProjectStyle by ComponentStyle{
     base { Modifier

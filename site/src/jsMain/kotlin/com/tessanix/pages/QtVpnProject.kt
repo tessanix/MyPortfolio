@@ -5,6 +5,7 @@ import com.tessanix.components.ProjectPageBar
 import com.tessanix.lang
 import com.tessanix.mainBackgroundColor
 import com.varabyte.kobweb.compose.css.ObjectFit
+import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
@@ -24,7 +25,8 @@ fun QtVpnProject() {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.backgroundColor(Color(mainBackgroundColor)).fillMaxWidth()
+        verticalArrangement = Arrangement.SpaceAround,
+        modifier = Modifier.backgroundColor(Color(mainBackgroundColor)).fillMaxWidth().fillMaxHeight()
     ) {
 
         ProjectPageBar(ctx,
@@ -61,7 +63,7 @@ fun QtVpnProject() {
             }
         }
         Column(
-            modifier = Modifier.margin(1.em),
+            modifier = Modifier.margin(1.em).fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             Video(

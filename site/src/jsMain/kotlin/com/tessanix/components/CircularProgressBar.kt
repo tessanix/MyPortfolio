@@ -86,7 +86,7 @@ fun CircularProgressBar(
                     cy = height/2,
                     r = (width-barThickness)/2,
                     attrs = Modifier
-                        .transition(CSSTransition("stroke-dashoffset", 2.s, AnimationTimingFunction.EaseInOut))
+                        .transition(CSSTransition("stroke-dashoffset", 2.s, AnimationTimingFunction.EaseOut))
                         .attrsModifier {
                             attr("stroke-linecap", "round") // make ends of the stroke (outline) of the circle round
                             attr("fill", "none") // make circle transparent
